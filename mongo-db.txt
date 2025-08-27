@@ -1,0 +1,783 @@
+> tip: shift + enter : xuống dòng
+
+MongoDB Bài 1 - Khái Niệm Cơ Sở Dữ Liệu (SQL Và NoSQL)
+
+ 
+ 	1. MongoDB (NoSQL)
+ 
+ 	+ Dữ liệu dạng document(JSON)
+ 	+ linh hoạt, k cần schema
+ 	+ không hỗ trợ join truyền thống
+ 	+ tốt cho dữ liệu phi cấu trúc
+ 	+ linh hoạt, dễ scale
+
+
+ 	2. MySQL (SQL)
+
+ 	+ Dữ liệu dạng bảng
+ 	+ cần schema cố định
+ 	+ hỗ trợ join mạnh
+ 	+ tốt cho dữ liệu quan hệ
+ 	+ tuân thủ ACID
+
+🔹 Nên dùng khi nào?
+
+MySQL: App tài chính, CRM, ERP, cần JOIN và tính chính xác cao.
+
+MongoDB: Social app, MVP, dữ liệu linh hoạt, scale lớn, cần phát triển nhanh, hiệu suất tốc độ cao.
+
+
+Ví dụ dự án phù hợp SQL:
+
+Hệ thống ngân hàng, kế toán (quan hệ phức tạp, cần tính chính xác).
+
+Website thương mại điện tử (quản lý sản phẩm, khách hàng, đơn hàng).
+
+Ứng dụng quản lý trường học (lớp học, sinh viên, điểm số).
+
+Bất cứ app nào mà tính nhất quán dữ liệu là số 1.
+
+
+Ví dụ dự án phù hợp NoSQL:
+
+Mạng xã hội (bài đăng, bình luận, like… lưu dạng document).
+
+Realtime chat (WebSocket + MongoDB/Redis).
+
+Hệ thống log, analytics, tracking (dữ liệu khổng lồ, cần lưu nhanh).
+
+Game online (trạng thái người chơi, leaderboard…).
+
+
+
+MongoDB Bài 2 - Cài Đặt Những Chương Trình Cần Thiết Cho Khóa Học
+
+ 	Cần tải những thứ cần thiết sau:
+
+ 		+ MongoDB community server
+ 		+ MongoDB Shell
+
+ 
+ 	Check download được chưa
+
+ 		cmd > mongosh
+
+
+
+
+MongoDB Bài 3 - Khái Niệm Sưu Tập Và Tài Liệu
+
+ 	1. Cách mongodb chứa dữ liệu
+
+ 		+ MongoDB chứa dữ liệu sẽ bao gồm nhiều bộ sưu tập (collection)
+
+ 		+ Mỗi bộ sưu tập sẽ có nhiều tài liệu khác nhau	(document)
+ 
+ 		+ Khi gọi 1 tàiu liệu cụ thể trong bộ sưu tập, sẽ cho về dạng BSON ( nhị phân của JSON )
+
+ 		+ Mỗi một dữ liệu BSON sẽ có 1 ID riêng biệt để phân biệt
+ 
+ 		+ Một tài liệu có thể sẽ có 1 tài liệu khác nhỏ hơn chẻn vào ( tài liệu lồng tài liệu )
+
+ 
+ 	MongoDB > Collection1, Collection2 > Document1, Document2,..
+
+
+
+MongoDB Bài 4 - Cách Sử Dụng Công Cụ MongoDB Compass
+
+ 	+ Công cụ này sẽ giúp chúng ta tao và kết nối đến db, crud dữee liệu
+
+ 	+ MongoDB Compass là giao diện đồ họa chính thức của MongoDB, giúp bạn làm việc với cơ sở dữ liệu mà không cần nhớ cú pháp lệnh.
+
+ 	+ Nói nôm na, nó là "Excel" của MongoDB — bạn click chuột, kéo thả, lọc dữ liệu trực quan thay vì gõ lệnh.
+
+
+ 	. Kết nối MongoDB và máy chủ
+
+ 		+ Add new connection > save connect
+
+ 
+
+
+MongoDB Bài 5 - Cách Sử Dụng Công Cụ MongoDB Shell
+
+ 	+ mongosh (MongoDB Shell) là công cụ dòng lệnh chính thức của MongoDB, dùng để tương tác trực tiếp với cơ sở dữ liệu MongoDB.
+
+ 	+ nơi bạn có thể:
+
+Kết nối tới server MongoDB (local hoặc remote).
+
+Gõ lệnh CRUD (Create, Read, Update, Delete) để làm việc với dữ liệu.
+
+Quản lý collection, database, user, index, v.v…
+
+Thực thi JavaScript trực tiếp để thao tác dữ liệu.
+
+
+🔍 So sánh nhanh
+
+| Tiêu chí                  | **mongosh** (Command Line)                                 | **MongoDB Compass** (GUI)                                      |
+| ------------------------- | ---------------------------------------------------------- | -------------------------------------------------------------- |
+| **Cách sử dụng**          | Gõ lệnh bằng tay                                           | Dùng giao diện trực quan                                       |
+| **Tốc độ thao tác**       | Nhanh nếu thuộc lệnh                                       | Nhanh với người mới hoặc khi cần xem dữ liệu trực quan         |
+| **Tính năng nâng cao**    | Có thể chạy script, automation, query phức tạp, admin task | Hỗ trợ filter, sort, aggregation cơ bản, xem dữ liệu trực quan |
+| **Cần nhớ cú pháp**       | ✅ Bắt buộc                                                 | ❌ Không cần                                                    |
+| **Trực quan hoá dữ liệu** | ❌ Không có                                                 | ✅ Có (biểu đồ, schema)                                         |
+| **Debug & DevOps**        | ✅ Rất tốt, phù hợp khi SSH vào server                      | ❌ Không tiện nếu đang làm việc trên terminal                   |
+| **Cài đặt**               | Nhẹ, chỉ cần terminal                                      | Nặng hơn, cần GUI                                              |
+| **Tích hợp CI/CD**        | ✅ Có thể dùng script mongosh trong pipeline                | ❌ Không hỗ trợ trực tiếp                                       |
+
+
+
+> Đơn giản mà nói mongosh chính là client, mongoDBCompass chính server
+
+ 	. Có thể khởi tạo trực tiếp qua mongoDB Compass = cách chọn open mongoshel
+
+ 	. hoặc sử dụng qua terminal > mongosh
+
+ 
+ 	* Một số lệnh cơ bản như:
+
+ 		+ show dbs
+ 		+ use db
+ 		+ exit
+ 
+ 		+ db.createCollection("name") > tạo collection
+
+ 	> mongodb hoàn toàn cho phép sử dụng 1 db chưa tồn tại
+
+ 	> kết nối đến 1 db nhất định: mongosh "mongodb://root:example@localhost:27018/" --username root --authenticationDatabase admin
+ 
+
+
+
+MongoDB Bài 6 - Thêm, xóa Tài Liệu Bộ Sưu Tập Bằng MongoDB Shell
+
+
+ Chọn db
+
+ 	* Thêm
+
+ 	2. db.collection.insertOne(data) > 1 data
+ 
+ 	3. db.collection.insertMany([many_obj_data]) > mảng nhiểu obj data
+
+
+ 	* xóa
+
+ 	1. db.collection.drop() > Xóa collection
+
+ 	2. db.collection.deleteOne() > xóa 1 doc
+
+ 	3. db.collection.deleteMany() > xóa nhiều docs
+
+ 
+ 	* ta hoàn toàn có thể sử dụng lệnh insert với collection chưa tồn tại vì nó sẽ tự động thêm vào db
+
+ 
+
+
+MongoDB Bài 7 - Cách Tìm Và Lọc Tài Liệu Trong MongoDB Shell
+
+ 	> "đơn" : k cần ""
+ 	> "a.v.v": cần ""
+
+ 	* Tìm doc trong collection
+
+ 	1. db.collection.find() > tìm tất cả và trả về
+
+
+ 	2. db.collection.find({sort_data}) > tìm trả về theo tiêu chí . VD: find({"name": "Thien"})
+
+ 
+ 	3. db.collection.find({sort_data}, {taken_out_data}) > Tìm và trả về theo tiêu chí ngoài ra còn lọc xem trả về những gì trong obj hợp lệ
+ 
+ 								VD: find({"name":"thien"}, {id: 1, type: 1}) > số biểu thị cho trường, 0 là bỏ
+
+
+ 	4. db.collection.findOne({sort_data})  > trả về 1 result duy nhất
+
+
+
+MongoDB Bài 8 - Sắp Xếp Và Giới Hạn Dữ Liệu
+
+
+ 	1. db.collection.count() > đếm tổng tài liệu
+
+ 	2. db.collection.find(<query>).limit(<number>) > giới hạn danh sách trả về
+
+
+Sắp xếp
+
+ 	3. db.collection.sort({title: 1}).limit(number) > Sắp xếp theo thứ tự tùy vào thuộc tính đặt
+
+ 		. 1 - Tăng dần
+
+ 		. -1 - Giảm dần
+
+ 
+
+MongoDB Bài 9 - Tạo Tài Liệu Lồng Tài Liệu
+
+
+ 	+ Đơn giản chỉ là 1 obj trong 1 obj khác :)
+
+{
+  "_id": "66bb1b3f8c2d4a5f1b2c9d1a",
+  "title": "Neon Skies",
+  "genre": "Action",
+  "releaseYear": 2022,
+  "rating": 8.8,
+  "isAvailable": true,
+  "details": {
+    "duration": 125,
+    "director": {
+      "name": "Liam Stone",
+      "birthYear": 1980,
+      "nationality": "Canada"
+    },
+    "production": {
+      "company": "Skyline Pictures",
+      "country": "USA"
+    }
+  }
+}
+
+📌 Trong ví dụ này:
+
+details là một document bên trong doc chính.
+
+director và production lại là nested document bên trong details.
+
+ 
++ Cách truy vấn vào nested document.
+ 
+
+Ví dụ lấy tất cả phim do Liam Stone đạo diễn:
+db.movies.find({ "details.director.name": "Liam Stone" })
+
+
+ 	* Lợi ích:
+
+ 		+ Chỉ cần dùng khi truy vấn là đã có tất cả các thông tin
+ 		+ Hoặc khi bộ sưu tập trở lên quá lớn, chỉ cần trả về những tài liệu trên đầu
+
+
+
+
+MongoDB Bài 10 - Những Bộ Lọc Nâng Cao
+
+ 	1. $gt (greater than), $lt (less than), $gte (greater than or equal), $lte (less than or equal)
+
+ 	VD: db.books.find({rating: {$gt : 7} })  > để trong dấu {}
+ 	    db.books.find({"rating": {$lt: 1}, "name": "abc" })
+
+
+ 	2. $or (1 trong 2 điều kiện đúng), $and :cả 2 đều đúng cách viết cũng tương tự
+
+
+ 	VD: db.books.find([{rating: 7}, {rating :9}]) > chỉ cần 1 trong 2 điều kiện thỏa mãn
+
+
+
+MongoDB Bài 11 - Từ Khóa Lọc Trong Và Không Trong
+
+ 
+ 	1. $in , $nin
+ 
+ 	VD:  db.books.find({"rating": {$in: [7, 8, 9]}}) > trả về tất cả các giá trị trong khoảng 7 8 9
+
+ 
+ 
+
+MongoDB Bài 12 - Cách Truy Vấn Tài Liệu Qua Mảng
+
+
+ 	VD:
+ 		Giả sử ta có 1 mảng genres
+ 
+ 		.  db.books.find({"genre": "Fantasy"}) > tìm mảng nào có thể loại bên trong
+
+ 		.  db.books.find({"genre": ["Fantasy"]}) > mảng chỉ có duy nhất thể loại này bên trong
+
+
+ 	2.  $all
+
+
+ 		. db.books.find({"genre": {$all: ["1", "2"]}}) > tìm tất cả các mảng có ít nhất 2 giá trị này trở lên
+
+ 
+
+
+MongoDB Bài 13 - Cách Xuất Và Xóa Tài Liệu
+ 
+ 	1. Xuất tài liệu
+
+ 		MongoDB Compass > chọn bộ sưu tập > export data > export full collection
+
+
+ 
+
+MongoDB Bài 14 - Cách Cập Nhật Tài Liệu
+
+ 
+ 	1. $set
+ 
+ 		1. db.collection.updateOne({attr}, {$set: {new_attr}}) > update 1 attr
+
+ 		2. 1. db.collection.updateMany({attr}, {$set: {new_attr}}) > update nhiều attr
+
+ 
+ 	2. $inc > tăng giá trị
+
+ 		1. db.collection.updateOne({attr}, {$inc: {page: 2}}) > tăng thêm 2 giá trị , -2 giảm 2 giá trị
+
+
+ 	3. $pull (lấy ra), $push (đẩy vào) > sử dụng cho mảng
+
+
+ 		1. db.collection.updateOne({attr}, {$pull: {genre: "ab"}}) > lấy ra 1 phần tử,  $push: thêm vào 1 phần tử
+
+
+
+
+MongoDB Bài 15 - Cách Kết Nối Với Ngôn Ngữ Lập Trình (Node.js)
+
+ 
+ 	npm i mongodb --save
+
+
+
+MongoDB Bài 16 - Kết Nối Và Gọi Cơ Sở Dữ Liệu Bằng Node.js
+
+ 	// DB.JS
+
+const { MongoClient } = require("mongodb"); // import MongoClient từ thư viện mongodb
+require("dotenv").config(); // đọc biến môi trường từ file .env
+
+let dbConnection; // biến toàn cục để lưu connection sau khi kết nối
+
+module.exports = {
+  connectToDB: async (callback) => { // hàm kết nối MongoDB, nhận callback báo trạng thái
+    const uri = process.env.MONGO_URI || "mongodb://localhost:27017"; // URL kết nối MongoDB (ưu tiên lấy từ .env)
+    const dbName = process.env.DB_NAME || "bookstore"; // tên database (ưu tiên lấy từ .env)
+
+    try {
+      // Tạo kết nối tới MongoDB
+      const client = await MongoClient.connect(uri, {
+        useNewUrlParser: true, // cú pháp mới cho URL
+        useUnifiedTopology: true, // dùng engine mới của MongoDB driver
+        serverSelectionTimeoutMS: 5000, // timeout 5 giây nếu không kết nối được
+      });
+
+      dbConnection = client.db(dbName); // gán kết nối DB cho biến toàn cục
+      console.log(`✅ Connected to MongoDB database: ${dbName}`); // log thành công
+      callback(); // báo cho server.js biết là kết nối xong
+    } catch (error) {
+      console.error("❌ Failed to connect to MongoDB:", error.message); // log lỗi
+      callback(error); // báo lỗi về server.js
+    }
+  },
+
+  getDB: () => dbConnection, // hàm trả về connection đã lưu để các file khác dùng
+};
+
+
+// server.js
+
+const express = require("express"); // import Express
+const { connectToDB, getDB } = require("./db"); // import hàm connectToDB và getDB từ db.js
+require("dotenv").config(); // đọc biến môi trường từ file .env
+
+const app = express(); // khởi tạo app Express
+const port = process.env.PORT || 3000; // lấy port từ .env, nếu không có thì dùng 3000
+let db; // biến lưu database connection
+
+// Kết nối DB trước khi start server
+connectToDB((error) => {
+  if (!error) { // nếu không có lỗi kết nối
+    db = getDB(); // lấy kết nối DB đã lưu trong db.js
+
+    app.listen(port, () => { // start server
+      console.log(`🚀 Server running on port ${port}`);
+    });
+  } else {
+    console.error("❌ Could not start server because DB connection failed."); // log lỗi nếu kết nối thất bại
+  }
+});
+
+// Route GET cơ bản
+app.get("/", (req, res) => {
+  res.send("Hello World!"); // trả về text khi truy cập /
+});
+
+
+
+
+MongoDB Bài 17 - Cách Truy Vấn Dữ Liệu Bằng Node.js
+
+/// CÁCH TRUY VẤN CŨNG GẦN GẦN GIỐNG NHƯ CÁCH TRUY VẤN QUA CMD của mongoDB Shell
+
+
+
+// Route GET cơ bản
+app.get("/books", (req, res) => {
+  let books = [];
+  db.collection("books")
+    .find()
+    .forEach((book) => {
+      books.push(book);
+    })
+    .then(() => {
+      res.status(200).json(books);
+    });
+});
+
+
+// Truy vấn qua Id
+
+app.get("/books/:id", (req, res) => {
+  if (ObjectId.isValid(req.params.id)) {
+    //
+  }
+});
+
+
+// POST Insert
+
+ 	db.collection("books").insertOne(data)
+
+// delete hay update cũng tương tự
+
+
+// .skip().limit() > skip và giới hạn số lượng hiển thị
+
+
+
+
+MongoDB Bài 24 - Chỉ Số Trong MongoDB
+
+📌 Tác dụng chính của createIndex:
+
+Tăng tốc độ truy vấn (find, sort, aggregate)
+
+Thay vì phải duyệt qua toàn bộ document trong collection (full collection scan), MongoDB sẽ dùng index để tìm dữ liệu nhanh hơn, giống như tra cứu mục lục trong sách thay vì đọc hết cả quyển.
+
+Tối ưu sắp xếp (sort)
+
+Nếu sắp xếp (sort) theo một field đã được tạo index, MongoDB có thể trả kết quả nhanh mà không phải load toàn bộ dữ liệu vào bộ nhớ để sắp xếp.
+
+Hỗ trợ tìm kiếm phức tạp
+
+Có thể tạo index trên nhiều field (compound index) hoặc index đặc biệt như text index, geo index, hashed index để hỗ trợ tìm kiếm toàn văn (full-text search), tìm kiếm vị trí địa lý, hoặc phân vùng dữ liệu.
+ 
+
+
+ 	1. db.collection.createIndex(data) > tạo index theo 1 tiêu chí nhất định
+
+ 	2. db.collection.getIndexes() > xem toàn bộ index hiện tại
+
+ 	3. db.books.dropIndex(data) > xóa index
+
+
+ 	4. db.books.explain("executionStatus") > kiểm tra index,.. các thông số khác của data
+
+
+
+
+MongoDB Bài 25 - Công Cụ MongoDB Atlas
+
+
+ 	+ MongoDB Atlas là dịch vụ MongoDB trên nền tảng cloud do chính MongoDB Inc. cung cấp.
+
+ 	+ Hiểu đơn giản, nó giúp bạn không cần tự cài đặt và quản lý server MongoDB, mà vẫn có thể sử dụng đầy đủ tính năng của MongoDB ở bất kỳ đâu có internet.
+
+
+
+ 	> Cũng giống như việc ta deploy đb lên digital ocean những dễ dàng và đỡ phức tạp hơn nhiều
+
+ 
+
+
+.................................................................
+
+ 	Phần 2: Của lão khác
+
+1. Sử dụng mongo với docker  > https://hub.docker.com/_/mongo
+
+
+
+2. Schema Validation
+
+ 	> Sinh ra nhằm validate cho các collection
+ 
+ 	> Có rất nhiều thuộc tính khác nữa cứ từ từ mà tìm hiểu
+
+ 	VD:
+
+db.createCollection("course", {
+  validator: {
+    $jsonSchema: {
+      bsonType: "object",
+      title: "Validate Course Object",
+      properties: {
+        title: {
+          bsonType: "string",
+          description: "title must be a string"
+        },
+        hour: {
+          bsonType: "int",
+          description: "hour must be a number"
+        }
+      }
+    }
+  }
+})
+
+
+ 	/// Show schema info
+ 
+ 	. db.getCollectionInfos({name: "course"}) > lấy thông tin collection và validation info
+
+ 
+ 	/// Update schema validation
+
+db.runCommand({
+  collMod: "course",
+  validator: {
+      $jsonSchema: {
+      bsonType: "object",
+      title: "Validate Course Object",
+      properties: {
+        title: {
+          bsonType: "string",
+          description: "title must be a string"
+        },
+        hour: {
+          bsonType: "int",
+          description: "hour must be a number"
+        }
+      }
+    }
+  }
+})
+
+
+3. db.movies.distinct("title") > tìm bản ghi k trùng nhau
+
+4. db.movies.find({ directors: {$size: 1}}).count() > độ dài của mảng
+
+
+5. Skip, Limit => Paging
+
+ 	db.movies.find().skip(0).limit(5) > skip và limit phần tử
+
+
+6. Aggregate Pipeline
+
+
+ + Trong MongoDB, khi làm việc với mongosh, khái niệm aggregate (hay aggregation) dùng để chỉ quá trình xử lý và biến đổi dữ liệu từ các document trong collection để tạo ra kết quả tổng hợp theo một pipeline (chuỗi các bước xử lý).
+
+👉 Nói cách khác: aggregate giống như việc bạn viết một “query nâng cao” để:
+
+Lọc dữ liệu ($match)
+
+Gom nhóm ($group)
+
+Sắp xếp ($sort)
+
+Tính toán (sum, avg, count…)
+
+Biến đổi dữ liệu ($project, $lookup, …)
+
+
+ 	> Các stage (bước) phổ biến trong aggregation pipeline:
+
+$match → lọc document (giống find)
+
+$group → nhóm dữ liệu theo _id
+
+$sort → sắp xếp kết quả
+
+$project → chọn/trích xuất/tránh hiển thị các trường
+
+$lookup → join với collection khác
+
+$limit, $skip → phân trang
+
+$count, $sum, $avg, $min, $max → các toán tử tính toán
+
+
+ 	VD: lọc lớn hơn 2000 > sắp xếp nhỏ đến lớn > lọc chỉ lấy year và _id
+
+db.movies.aggregate([
+  {
+    $match : {
+      year: {$gt:  2000}
+    }
+  },
+  {
+    $sort: {year: 1}
+  },
+  {
+    $project: {year: 1}
+  }
+])
+
+
+      VD: tính trung bình
+
+{ "name": "Alice", "subject": "Math", "score": 85 }
+{ "name": "Bob", "subject": "Math", "score": 92 }
+{ "name": "Alice", "subject": "History", "score": 78 }
+{ "name": "Bob", "subject": "History", "score": 88 }
+
+
+db.students.aggregate([
+  { $group: { _id: "$name", avgScore: { $avg: "$score" } } }
+])
+
+
+> { "\_id": "Alice", "avgScore": 81.5 }
+  { "_id": "Bob", "avgScore": 90 }
+
+
+/////////
+
+Khái niệm $lookup
+
+$lookup dùng để kết hợp dữ liệu từ 2 collection khác nhau trong MongoDB.
+
+Nó hoạt động giống như LEFT JOIN trong SQL.
+
+Kết quả sau khi $lookup sẽ thêm một mảng chứa dữ liệu "match" từ collection kia.
+
+
+ 	Cấu trúc :
+
+{
+  $lookup: {
+    from: "<collection khác>",        // tên collection cần join
+    localField: "<trường ở collection hiện tại>",
+    foreignField: "<trường ở collection được join>",
+    as: "<tên field mới để lưu kết quả>"
+  }
+}
+
+
+
+ 	VD: join 2 collection với $lookup
+
+ 
+{ "_id": 1, "item": "apple", "customerId": 101 }
+{ "_id": 2, "item": "banana", "customerId": 102 }
+{ "_id": 3, "item": "orange", "customerId": 103 }
+
+
+{ "_id": 101, "name": "John" }
+{ "_id": 102, "name": "Mary" }
+
+
+
+db.orders.aggregate([
+  {
+    $lookup: {
+      from: "customers",       // join với collection customers
+      localField: "customerId",// field trong orders
+      foreignField: "_id",     // field trong customers
+      as: "customerInfo"       // đặt tên field mới để chứa dữ liệu join
+    }
+  }
+])
+
+
+> Kết quả 
+
+{
+  "_id": 1,
+  "item": "apple",
+  "customerId": 101,
+  "customerInfo": [ { "_id": 101, "name": "John" } ]
+}
+{
+  "_id": 2,
+  "item": "banana",
+  "customerId": 102,
+  "customerInfo": [ { "_id": 102, "name": "Mary" } ]
+}
+{
+  "_id": 3,
+  "item": "orange",
+  "customerId": 103,
+  "customerInfo": [ ]   // không tìm thấy => mảng rỗng
+}
+
+
+ 
+
+7. Làm việc với REGular EXpression (Biếu thức chính quy)
+
+VD: regex có chứa kí tự trong 1 chuỗi
+
+db.comments.aggregate([
+  {
+   $match: {
+    text: /.*Veritatis.*/i
+  }
+  }
+])
+
+
+
+8. $addFields : Thêm trường vào kết quả
+
+db.movies.aggregate([
+  {
+    $match: {
+      writers: {$exists: true}
+    }
+  },
+  {
+  $addFields: {
+    numberOfWriter: {$size: "$writers"},
+    numberOfAward:  "$awards.wins"
+  }
+  }
+])
+
+
+
+9. $unwind: làm phẳng 1 mảng thành nhiều obj riêng lẻ
+
+VD:
+
+
+{ "_id": 1, "name": "Alice", "hobbies": ["reading", "coding", "swimming"] }
+{ "_id": 2, "name": "Bob",   "hobbies": ["gaming", "traveling"] }
+
+
+db.students.aggregate([
+  { $unwind: "$hobbies" }
+])
+
+
+> kết quả 
+
+
+{ "_id": 1, "name": "Alice", "hobbies": "reading" }
+{ "_id": 1, "name": "Alice", "hobbies": "coding" }
+{ "_id": 1, "name": "Alice", "hobbies": "swimming" }
+{ "_id": 2, "name": "Bob",   "hobbies": "gaming" }
+{ "_id": 2, "name": "Bob",   "hobbies": "traveling" }
+
+
+
+
+
+
+
+
+ 
+
+ 

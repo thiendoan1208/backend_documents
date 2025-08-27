@@ -1,0 +1,16 @@
+	* Để sử dụng được tính năng login của google cần có 
+
+		1. Google Cloud Console 
+
+		Google cloud console > api & service > credentials > Create Credentail > Oauth Client ID  > Web application 
+
+		
+		2. Sử dụng cùng thư viện: React OAuth2 | Google
+
+		https://www.npmjs.com/package/@react-oauth/google
+
+	
+		3.  Chi tiết: https://www.youtube.com/watch?v=vI86PPoVneQ
+
+
+	

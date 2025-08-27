@@ -1,0 +1,1212 @@
+https://docs.docker.com/get-started/workshop/
+
+
+
+
+
+\#1 DOCKER LÀ GÌ - TẠI SAO CHÚNG TA LẠI CẦN DOCKER ?
+
+
+
+🐳 Docker là gì?
+
+
+
+Docker = Hệ thống để đóng gói ứng dụng và môi trường chạy vào container.
+
+
+
+Mỗi container giống như một máy tính mini chạy riêng biệt nhưng dùng chung tài nguyên hệ điều hành với máy chủ host.
+
+
+
+Docker sử dụng các image (ảnh) – bản sao "đóng băng" của hệ điều hành + ứng dụng – để tạo ra container.
+
+
+
+⚡ Tại sao chúng ta cần Docker?
+
+
+
+✅ 1. Chạy ở mọi nơi
+
+
+
+“It works on my machine” không còn là vấn đề.
+
+
+
+Docker đảm bảo ứng dụng chạy giống nhau trên mọi máy: dev, staging, production.
+
+
+
+Không cần lo về phiên bản Node.js, Python, thư viện hệ điều hành... vì tất cả đã nằm trong image.
+
+
+
+✅ 2. Dễ deploy và rollback
+
+
+
+Bạn chỉ cần build 1 Docker image → deploy lên bất kỳ server nào hỗ trợ Docker.
+
+
+
+Nếu có lỗi, có thể rollback về image cũ rất dễ dàng.
+
+
+
+✅ 3. Dễ phát triển và kiểm thử
+
+
+
+Có thể tạo nhiều container cho từng thành phần:
+
+
+
+Web frontend (React, Vue, ...)
+
+
+
+Backend API (Node.js, Express, ...)
+
+
+
+Database (MySQL, PostgreSQL, MongoDB, ...)
+
+
+
+Tách biệt môi trường, tránh xung đột thư viện hay cổng.
+
+
+
+✅ 4. Tiết kiệm tài nguyên hơn VM
+
+
+
+Container dùng chung kernel của host OS → nhẹ hơn máy ảo (VM).
+
+
+
+Khởi động nhanh, chiếm ít RAM/CPU hơn.
+
+
+
+✅ 5. CI/CD \& DevOps thân thiện
+
+
+
+Docker tích hợp tốt với các công cụ tự động hóa:
+
+
+
+Jenkins, GitHub Actions, GitLab CI,...
+
+
+
+Hỗ trợ quy trình build → test → deploy hoàn toàn tự động.
+
+
+
+🔧 Ví dụ thực tế
+
+
+
+Bạn đang làm một web app React + Node.js + MySQL:
+
+
+
+Truyền thống: Cài MySQL, Node, npm,... trên máy thật → dễ lỗi, tốn thời gian.
+
+
+
+Dùng Docker:
+
+
+
+Viết Dockerfile cho backend
+
+
+
+Dùng docker-compose để chạy MySQL, backend, frontend cùng lúc
+
+
+
+Dễ dàng chia sẻ code + môi trường cho team
+
+
+
+📌 Kết luận
+
+
+
+Docker không bắt buộc phải dùng, nhưng cực kỳ hữu ích khi:
+
+
+
+Làm việc nhóm
+
+
+
+Triển khai ứng dụng lên server
+
+
+
+Làm DevOps, CI/CD
+
+
+
+Phát triển microservices
+
+
+
+
+
+\#2 GETTING STARTED VỚI DOCKER DESKTOP - CHUẨN BỊ MÔI
+
+TRƯỜNG CHO DOCKER
+
+
+
+
+
+✅ Docker Desktop:
+
+ 	+  là phần mềm cài trên máy tính (Windows/macOS) giúp bạn chạy và quản lý Docker dễ dàng. Nó bao gồm:
+
+
+
+Docker Engine (để chạy container)
+
+
+
+Giao diện đồ họa để xem container, image, volume
+
+
+
+Terminal để gõ lệnh Docker
+
+
+
+Dùng rất tiện cho lập trình viên phát triển và test ứng dụng
+
+
+
+✅ Docker Hub:
+
+ 	+  là kho lưu trữ Docker image trên internet. Nó giống như GitHub nhưng dành cho Docker.
+
+Bạn có thể tải (pull) các image phổ biến như node, mysql, ubuntu, v.v.
+
+
+
+Có thể tự tạo image và đẩy (push) lên để chia sẻ hoặc deploy
+
+
+
+Có tài khoản miễn phí và hỗ trợ repo riêng tư nếu cần
+
+
+
+Tóm lại:
+
+👉 Docker Desktop là công cụ dùng trên máy để phát triển
+
+👉 Docker Hub là nơi lưu trữ image để dùng hoặc chia sẻ
+
+
+
+
+
+\#3 HELLO WORLD VỚI DOCKER - CHẠY ỨNG DỤNG ĐẦU TIÊN BẰNG DOCKER
+
+
+
+  1. Chưa có docker hub thì nên tạo 1 cái để sau này pull image lên
+
+
+
+ 	https://hub.docker.com/
+
+
+
+ 
+
+ 	> Tạo 1 container đầu tiên
+
+ 
+
+ 	+ docker run -dp 80:80 docker/getting-started
+
+
+
+         + người dùng sau này chỉ cần chạy 1 câu lệnh là đã có toàn bộ sản phẩm
+
+ 
+
+
+
+\#4 BUILD \& CHẠY IMAGE ỨNG DỤNG NODE.JS VỚI DOCKER
+
+
+
+
+
+ 	1. Docker Image, Container là gì
+
+
+
+🧱 Docker Image là gì?
+
+
+
+Docker Image là bản đóng gói của ứng dụng và môi trường chạy của nó (hệ điều hành, runtime, thư viện, file mã nguồn…).
+
+
+
+Nó giống như một bản chụp (snapshot) sẵn sàng để tạo ra các container.
+
+
+
+Image là bất biến (không thay đổi sau khi build).
+
+
+
+
+
+📦 Docker Container là gì?
+
+
+
+Docker Container là phiên bản đang chạy của một image.
+
+
+
+Nó giống như một "ứng dụng thật" đang hoạt động.
+
+
+
+Mỗi container tách biệt với máy chủ và các container khác.
+
+
+
+
+
+👉 Có thể hình dung:
+
+
+
+Docker image giống như đống file được đóng gói sẵn (bao gồm mã nguồn, thư viện, môi trường…). Nó không chạy được, chỉ là "mẫu chuẩn".
+
+
+
+Docker container giống như máy ảo nhẹ, khi bạn "bật" container thì nó nhận đống file từ image và chạy ứng dụng từ đó.
+
+
+
+
+
+ 	2. Chạy app đầu tiên với docker (đóng vai 1 user)
+
+
+
+ 	https://docs.docker.com/get-started/introduction/develop-with-containers/
+
+
+
+
+
+ 		Trường hợp 1: Có docker-compose.yml
+
+
+
+docker-compose up --build -d ( -d: chế độ nền, --build nếu chưa build image)
+
+ 
+
+ 		Trường hợp 2: Không có docker-compose.yml
+
+
+
+\# Build image (tên tùy chọn, ví dụ: todo-app)
+
+docker build -t todo-app .
+
+
+
+\# Chạy container
+
+docker run -p 3000:3000 todo-app (cùng port với máy)
+
+
+
+
+
+ 	> Kiểm tra http://localhost:3000
+
+
+
+
+
+
+
+
+
+ 	3. Một số điều cần biết
+
+
+
+ 		1. Dockerfile là gì?
+
+
+
+ 		+ Dockerfile là file chứa hướng dẫn để build ra một Docker image.
+
+
+
+
+
+ 		2. docker-compose.yml là gì?
+
+
+
+ 			+ docker-compose.yml là file định nghĩa cách chạy nhiều container cùng lúc.
+
+
+
+ 			+ docker compose up, chạy cùng lúc các thiết lập đã được định nghĩa
+
+
+
+
+
+ 
+
+ 	4. Tại sao có 2 cách khác nhau?
+
+
+
+Trường hợp			Lam gì
+
+❌ Không có docker-compose.yml	Bạn phải tự build và run từng container bằng tay: docker build, docker run...
+
+
+
+✅ Có docker-compose.yml	Bạn chỉ cần docker compose up để khởi động tất cả mọi thứ:
+
+ 				backend, frontend, db... tự động
+
+
+
+
+
+ 	5. ⚙️ So sánh nhanh: docker compose up vs docker compose watch
+
+
+
+
+
+Lệnh			Mục đích	                 Có rebuild khi sửa code?		Có tự restart
+
+docker compose up		Khởi chạy container	❌ Không tự rebuild		❌ Không tự restart
+
+
+
+
+
+docker compose watch	Theo dõi thay đổi code và rebuild lại		✅ Có	✅ Có
+
+
+
+
+
+
+
+\#5 CẬP NHẬT ỨNG DỤNG DOCKER
+
+
+
+ 	1. Cập nhật nội dung với Docker
+
+
+
+ 	+ Trong trường hợp ta có compose.yml thì chỉ cần chạy docker compose watch là ứng dụng sẽ tự động apply thay đổi mới
+
+
+
+ 	+ Trong trường hợp không có thì ta phải chạy thủ công lại sau khi chỉnh sửa
+
+
+
+\# Build image (tên tùy chọn, ví dụ: todo-app)
+
+docker build -t todo-app .
+
+
+
+\# Chạy container
+
+docker run -p 3000:3000 todo-app (cùng port với máy)
+
+
+
+ 
+
+ 	2. Stop container
+
+
+
+ 	docker stop <container\_id hoặc container\_name>
+
+
+
+ 
+
+ 	3. Xóa hẳn container
+
+
+
+ 	docker rm <container\_id hoặc container\_name>
+
+
+
+ 
+
+ 	> docker compose down ( vừa stop vừa xóa luôn container )
+
+
+
+
+
+4\. List docker
+
+
+
+
+
+ 	docker ps or docker ps -a
+
+
+
+
+
+
+
+>> Cách đơn giản nhất là vào hẳn docker desktop hoặc cài extension trong vs và thao tác
+
+
+
+
+
+
+
+\#6.1 CHIA SẺ ỨNG DỤNG DOCKER VỚI DOCKER HUB
+
+
+
+ 	1. Tạo 1 repo
+
+ 
+
+ 		https://hub.docker.com/
+
+
+
+ 	2. Đẩy image từ local lên docker hub
+
+
+
+ 		+ kiểm tra các images
+
+
+
+ 		docker images
+
+ 
+
+ 		+ gắn tag cho image cần push
+
+
+
+ 		docker tag getting-started-todo-app-backend thiendoan1208/getting-started-todo-app:latest
+
+
+
+ 			>  getting-started-todo-app-backend : tên cũ
+
+ 
+
+ 			> getting-started-todo-app:latest : đổi tên + gắn tag
+
+
+
+ 			> thiendoan1208: userid
+
+ 
+
+ 		+ push
+
+
+
+ 		docker push thiendoan1208/getting-started-todo-app:latest
+
+
+
+ 			> getting-started-todo-app:latest: tên + tag sau khi đổi
+
+
+
+
+
+ 		\* Lưu ý:
+
+
+
+Phải đổi name giống với name của repo thì nó mới push vào cái repo ấy, nếu không thì nó sẽ tạo 1 cái repo mới
+
+
+
+Repo của docker hub không phải là 1 container mà là 1 kho lưu trữ các images ở nhiều phiên bản khác nhau
+
+ 
+
+
+
+\#6.2 CHẠY IMAGE DOCKER TỪ DOCKER HUB TRÊN CLOUD
+
+
+
+
+
+ 	https://labs.play-with-docker.com/
+
+
+
+ 	> Có 1 vấn đề xảy ra. ví dụ với todo list sau khi thêm note mà ta build lại thì sẽ mất hết tất cả dữ liệu. Sử dụng Persist Data
+
+
+
+
+
+
+
+\#7 GHI DATA VỚI VOLUME - PERSIST DATA VỚI CONTAINER DOCKER
+
+
+
+
+
+Docker Volume là gì?
+
+
+
+Docker Volume là vùng lưu trữ dữ liệu bên ngoài container, dùng để:
+
+
+
+Giúp container lưu trữ dữ liệu lâu dài (persistent data)
+
+
+
+Cho phép chia sẻ dữ liệu giữa nhiều container
+
+
+
+Tránh mất dữ liệu khi container bị xóa hoặc restart
+
+
+
+2\. Sử dụng
+
+
+
+ 	1. Tạo volume:
+
+
+
+ 	docker volume create mydata
+
+
+
+ 	2. Dùng trong container:
+
+
+
+ 	docker run -dp 127.0.0.1:3000:3000 --mount type=volume,src=todo-db,target=/etc/todos image:tag
+
+
+
+
+
+ 	> Mount dữ liệu trong db vào volume (mysql sẽ lưu theo địa chỉ: /var/lib/mysql )
+
+
+
+
+
+\#8 DEV SERVER VỚI DOCKER BIND MOUNTS - LIVE RELOADING CODE
+
+
+
+ 	https://docs.docker.com/get-started/workshop/06\_bind\_mounts/
+
+
+
+ 
+
+ 	> Ta hoàn toàn có thể sử dụng docker compose watch để live reloading code luôn
+
+
+
+
+
+🔥 Khi nào dùng bind mount?
+
+Khi bạn cần chạy code từ host vào container (ví dụ chạy Node.js và hot reload)
+
+
+
+Khi cần chia sẻ log hoặc file tạm thời giữa container và máy thật
+
+
+
+
+
+🧠 Bind mount khác gì volume?
+
+
+
+ 			Bind mount			Volume
+
+Nơi lưu dữ liệu		Bạn chỉ định thư mục trên host	Docker tự quản lý trong /var/lib/docker/...
+
+
+
+Dễ chia sẻ code		✅ Dễ dàng chia sẻ thư mục code	❌ Không dùng để phát triển trực tiếp
+
+
+
+Độ tin cậy, an toàn	❌ Dễ lỗi nếu chỉ định sai		✅ An toàn, được Docker quản lý
+
+
+
+Phù hợp cho		Phát triển, debug		Lưu trữ dữ liệu sản xuất (MySQL, Postgres...)
+
+
+
+
+
+
+
+\#9 Multi CONTAINER APPS - QUẢN LÝ NHIỀU ỨNG DỤNG VỚI DOCKER
+
+
+
+######  	1. Đầu tiên ta phải hiểu Compose Stack là gì.
+
+
+
+ \* Compose Stack = Một nhóm container (service) định nghĩa trong 1 file docker-compose.yml, chạy và quản lý cùng nhau.
+
+ 
+
+\* Khi ta bật ứng dụng docker sẽ thấy có 1 stack chứa các docker container bên trong, mỗi docker container lại có 1 docker image
+
+
+
+VD:
+
+
+
+🧠 Ví dụ:
+
+Giả sử bạn có một hệ thống web:
+
+
+
+frontend (React app)
+
+
+
+backend (Node.js API)
+
+
+
+db (MySQL)
+
+
+
+Tất cả sẽ được định nghĩa trong một docker-compose.yml
+
+
+
+ 	> docker compose up -d
+
+
+
+Lúc này toàn bộ hệ thống (gọi là stack) sẽ cùng được khởi động và quản lý như 1 khối.
+
+
+
+
+
+######  	2. Nhiều app bên trong container
+
+
+
+ 	+ Mỗi một container chỉ nên chứa 1 images và làm tốt nhiệm vụ của nó, nhiều sẽ gây khó bảo trì
+
+
+
+######  	3. Docker Network 
+
+
+		1. Docker Network là gì ?
+
+		+ Docker network là hệ thống mạng ảo mà Docker tạo ra để các container có thể giao tiếp với nhau và với host hoặc internet một cách an toàn và linh hoạt.
+
+		
+		✅ Khi nào cần Docker network?
+
+Khi bạn có nhiều container cần liên lạc nội bộ (frontend ↔ backend ↔ database).
+
+Khi muốn phân vùng mạng (bảo mật tốt hơn).
+
+Khi dùng Docker Compose (nó tự tạo mạng riêng cho bạn).
+
+
+		* Lưu ý: Nếu bạn đang làm việc với docker compose, thì mặc định các container sẽ nằm chung 1 network riêng rồi (bạn không cần tạo thủ công). Nhưng trong những trường hợp phức tạp hơn, việc hiểu rõ docker network giúp bạn linh hoạt cấu trúc ứng dụng.
+
+
+
+		2. Tạo network 
+
+https://docs.docker.com/get-started/workshop/07_multi_container/
+
+
+
+
+\#10 DOCKER COMPOSE - Dung Hợp Ứng Dụng Docker Thành Duy Nhất 
+
+
+	1. Docker Compose là gì ? 
+
+	+ Docker Compose là công cụ giúp bạn dễ dàng định nghĩa và chạy nhiều container Docker cùng lúc chỉ bằng một file cấu hình duy nhất (docker-compose.yml).
+
+	📦 Tác dụng của Docker Compose:
+
+Tổ chức ứng dụng gồm nhiều dịch vụ (multi-container).
+
+Dễ dàng cấu hình mạng, volume, môi trường.
+
+Quản lý toàn bộ stack (dịch vụ) bằng một file.
+
+Tiện cho phát triển, test, staging, production.
+
+
+🚀 Lệnh cơ bản:
+
+| Lệnh                   | Tác dụng                                       |
+| ---------------------- | ---------------------------------------------- |
+| `docker compose up`    | Build + run toàn bộ container từ file YAML     |
+| `docker compose up -d` | Chạy nền (detached mode)                       |
+| `docker compose down`  | Dừng và xóa toàn bộ container, network, volume |
+| `docker compose build` | Chỉ build các image trong file `compose`       |
+| `docker compose logs`  | Xem log tập trung của tất cả container         |
+| `docker compose ps`    | Liệt kê trạng thái các container               |
+
+		
+
+	2. Một số từ khóa cơ bản trong docker-compose.yml 
+
+version: '3.8'        # version của docker compose file
+services:             # Tập hợp các service (mỗi service là 1 container)
+  backend:
+    build: ./backend          # build image từ Dockerfile tại ./backend
+    image: my-backend-app     # hoặc dùng image có sẵn
+    ports:
+      - "5000:5000"           # map port host:container
+    volumes:
+      - ./backend:/app        # bind mount mã nguồn vào container
+    depends_on:
+      - db                    # chờ db khởi động trước
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:3000"
+
+  db:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_DATABASE: mydb
+    volumes:
+      - mysql-data:/var/lib/mysql
+
+volumes:
+  mysql-data:
+
+
+| Từ khóa       | Ý nghĩa ngắn gọn                                     |
+| ------------- | ---------------------------------------------------- |
+| `services`    | Các container (backend, frontend, db,...)            |
+| `build`       | Nơi chứa Dockerfile để build image                   |
+| `image`       | Tên image nếu dùng image có sẵn                      |
+| `ports`       | Mở cổng (host\:container)                            |
+| `volumes`     | Mount volume để lưu dữ liệu hoặc mount mã nguồn      |
+| `environment` | Biến môi trường cho container                        |
+| `depends_on`  | Khởi chạy theo thứ tự                                |
+| `networks`    | Cấu hình mạng nếu cần (mặc định đã có network riêng) |
+
+
+
+	3. Các bước đóng gói 1 ứng dụng fullstack fe, be, db 
+
+		1. Phải có ứng dụng :)
+
+		2. Tạo Dockerfile cho từng phần 
+
+		VD: Frontend 
+
+FROM node:18
+WORKDIR /app
+COPY . .
+RUN npm install
+RUN npm run build
+EXPOSE 3000
+CMD ["npm", "run", "preview"]  # hoặc start nếu là SSR
+
+
+		3. Tạo file docker compose 
+
+version: '3.8'
+services:
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+
+  backend:
+    build: ./backend
+    ports:
+      - "5000:5000"
+    environment:
+      DB_HOST: db
+    depends_on:
+      - db
+
+  db:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_DATABASE: mydb
+    volumes:
+      - db-data:/var/lib/mysql
+
+volumes:
+  db-data:
+		
+
+		4. build và chạy
+
+docker compose up --build
+
+
+
+	3. Một số lưu ý:
+
+	+ Thường sẽ deploy riêng fe, be, db 
+
+	+ docker compose gom tất cả fe, be, db để người dùng dễ dàng test. tuy nhiên không nên deploy cả 1 docker compose to như vậy lên production 
+
+
+	
+	4. Quy trình có thể hiểu đơn giản như sau 
+
+🟡 1. Khởi đầu – tạo DB riêng với Docker Compose
+Tạo file docker-compose.mysql.yml chỉ để chạy MySQL (hoặc PostgreSQL).
+
+Dễ test backend sớm, dễ backup DB.
+
+🔵 2. Phát triển FE và BE bình thường
+Viết code frontend/backend như bình thường.
+
+Backend connect vào DB thông qua host mysql (nếu dùng Docker), hoặc host.docker.internal (trong local).
+
+🟢 3. Sau khi hoàn thành – tạo 1 file docker-compose.yml tổng
+Gộp cả: mysql + backend + frontend.
+
+Dễ dàng chạy toàn bộ app bằng docker compose up.
+
+🟣 4. Gửi cho customer
+Gửi repo + file docker-compose.yml.
+
+Họ chỉ cần chạy 1 lệnh: docker compose up là xem được app hoàn chỉnh.
+
+🔴 5. Khi khách đồng ý → triển khai (deploy)
+Frontend: Deploy riêng lên Vercel, Netlify, S3 hoặc VPS.
+
+Backend: Deploy image riêng lên VPS hoặc platform khác.
+
+MySQL:
+
+Tạo container DB riêng từ image mysql + volume.
+
+Hoặc dùng dịch vụ DB chuyên nghiệp như Supabase, Railway...
+
+
+
+\#11. Thực hành đóng gói ứng dụng với docker.
+
+
+	1. Chuẩn bị cho môi trường production 
+
+		+ Xử lý file env
+		
+		+ Xử lý sequelize 
+
+
+
+	2. Build DB với Docker 
+
+		* Thường bước này ta có thể làm luôn từ đầu để có db dùng 
+
+		B1. tạo folder docker > docker-compose.yaml 
+		
+		B2. 
+
+services:
+  db-mysql:                                # Tên service là db-mysql
+    image: mysql:5.7.40                    # Dùng image MySQL phiên bản z5.7.40
+    restart: always                        # Container sẽ tự khởi động lại nếu bị dừng
+
+    environment:                           # Các biến môi trường cấu hình MySQL
+      - MYSQL_DATABASE=letwatch_database   # Tự động tạo database tên là letwatch_database
+      - MYSQL_ROOT_PASSWORD=letwatch1208   # Thiết lập mật khẩu root là letwatch1208
+
+    ports:
+      - "8080:3306"                         # Port 8080 (máy bạn) → 3306 (trong container)
+
+    volumes:
+      - mysql-data:/var/lib/mysql          # Gắn volume để lưu dữ liệu MySQL bền vững
+
+volumes:
+  mysql-data:                              # Định nghĩa volume tên là mysql-data
+
+
+		B3. Build db 
+
+docker compose -f <ten-file> -p nodejs-sql up -d        # Khởi chạy container (chạy nền)
+
+	-p : 
+
+Mặc định Docker Compose sẽ dùng tên thư mục làm project name
+
+Khi bạn dùng -p nodejs-sql, nó ép buộc tất cả container/volume/network của project này dùng prefix nodejs-sql_
+
+
+	-d : chạy nền
+
+	-f : chỉ định tên file compose cụ thể 
+
+docker-compose down         # Tắt và xoá container (volume vẫn giữ nguyên)
+docker volume ls            # Xem các volume hiện có
+docker volume inspect mysql-data    # Xem thông tin volume mysql-data
+
+
+		B4: Build backend
+
+( tham khảo: https://docs.docker.com/reference/dockerfile/ )
+
+			1. Viết docker file cho be
+
+
+ # 1. Dùng image nhẹ node alpine
+FROM node:20-alpine
+
+# 2. Tạo và chuyển vào thư mục làm việc trong container
+WORKDIR /letwatch-backend
+
+# 3. Copy file cấu hình trước để tận dụng cache
+COPY package*.json ./
+
+# 4. Cài đặt dependencies
+RUN npm install
+
+# 5. Copy toàn bộ source code
+COPY . .
+
+# 6. Mặc định khi container start, chạy ứng dụng (start script định nghĩa trong package.json)
+CMD [ "npm", "start" ]
+
+
+
+		B5: Build frontend
+
+# 👉 Stage 1: Build ứng dụng Next.js
+FROM node:18-alpine AS builder     # ✅ Sử dụng image Node.js nhẹ (Alpine), đặt tên stage là "builder"
+
+WORKDIR /app                       # ✅ Tạo thư mục /app trong container và chuyển vào đó
+COPY package*.json ./              # ✅ Copy file package.json và package-lock.json vào container
+RUN npm install                    # ✅ Cài đặt toàn bộ dependency từ package.json
+
+COPY . .                           # ✅ Copy toàn bộ mã nguồn vào container
+RUN npm run build                  # ✅ Build ứng dụng Next.js ra mã production (tạo folder `.next`)
+
+# 👉 Stage 2: Chạy ứng dụng với Next.js server
+FROM node:18-alpine                # ✅ Bắt đầu stage mới, tiếp tục dùng Node.js Alpine cho nhẹ
+
+WORKDIR /app                       # ✅ Tạo thư mục mới và chuyển vào
+COPY --from=builder /app ./        # ✅ Copy toàn bộ file đã build từ stage builder sang stage hiện tại
+
+EXPOSE 3000                        # ✅ Mở cổng 3000 để bên ngoài có thể truy cập vào (Next.js mặc định dùng port 3000)
+
+CMD ["npm", "start"]               # ✅ Lệnh mặc định khi container chạy: dùng Next.js server (start = next start)
+
+
+		B6. Viết file docker-compose cho toàn bộ dự án 
+
+
+services:
+
+  letwatch-database:                                  # ✅ Service MySQL – Database dùng chung cho backend
+    image: mysql:5.7.40                               # ✅ Dùng image MySQL phiên bản 5.7.40 từ Docker Hub
+    restart: always                                   # ✅ Luôn restart lại container nếu có lỗi hoặc dừng bất ngờ
+
+    environment:                                      # ✅ Các biến môi trường dùng để khởi tạo DB
+      - MYSQL_DATABASE=letwatch_database             # Tên DB tạo sẵn
+      - MYSQL_ROOT_PASSWORD=letwatch1208             # Mật khẩu cho tài khoản root
+
+    ports:
+      - "8080:3306"                                   # ✅ Map port: bên ngoài là 8080, bên trong container là 3306
+                                                      # ⚠️ Chỉ dùng khi bạn muốn kết nối từ máy host → container
+    expose:
+      - 3306                                          # ✅ Cho phép các container khác trong cùng mạng Docker gọi qua cổng 3306
+
+    volumes:
+      - mysql-data:/var/lib/mysql                    # ✅ Gắn volume để lưu dữ liệu DB (tránh mất khi xóa container)
+
+  letwatch-backend:                                   # ✅ Service backend (Node.js + Express)
+    build: 
+      context: ./letwatch_backend_app                 # ✅ Thư mục chứa mã nguồn backend + Dockerfile
+      dockerfile: Dockerfile                          # ✅ Tên Dockerfile để build backend
+    restart: unless-stopped                           # ✅ Restart lại trừ khi bạn stop thủ công
+
+    environment:
+      - LETWATCH_DB_HOSTNANE=letwatch-database        # ❌ Sai chính tả! → nên sửa thành `LETWATCH_DB_HOSTNAME`
+                                                      # ✅ Đây là tên service MySQL – backend sẽ connect đến đây
+      - LETWATCH_DB_PORT=3306                         # ✅ Port nội bộ MySQL – phải là 3306 (mặc định)
+
+    ports:
+      - 4000:4000                                     # ✅ Mở cổng để gọi API từ máy host → container
+
+  letwatch-frontend:                                  # ✅ Service frontend (Next.js)
+    build: 
+      context: ./letwatch_frontend_app                # ✅ Thư mục chứa mã nguồn frontend + Dockerfile
+      dockerfile: Dockerfile                          # ✅ Dockerfile để build FE
+    restart: unless-stopped                           # ✅ Tự restart nếu có lỗi
+
+    depends_on:
+      - letwatch-backend                              # ✅ Đảm bảo FE khởi động sau khi backend đã sẵn sàng
+
+    ports:
+      - 3000:3000                                     # ✅ Cổng FE – thường dùng 3000 cho Next.js
+
+    environment:
+      - NEXT_PUBLIC_API_BACKEND_URL=http://localhost:4000/api
+                                                      # ✅ Biến môi trường cho client-side gọi API backend
+                                                      # ⚠️ `localhost` chỉ dùng được khi chạy app trên máy bạn
+                                                      # 👉 Nếu chạy trong container, nên là: `http://letwatch-backend:4000/api`
+
+volumes:
+  mysql-data:                                         # ✅ Volume dùng để lưu trữ dữ liệu DB
+
+
+ 		Một số lưu ý: 
+
+	+ Ta có thể tạo riêng phần database trước để có cái làm việc. sau khi hoàn thành thì gộp chung lại sau. nếu muốn không mất dữ liệu thì hãy sử dụng volume
+	
+	+ Nhớ chú ý phần port để kết nối be tới db
+
+	+ Cần có dockerfile ở 2 phần fe, be để hướng dẫn cho docker compose build 
+
+	+ Cần có cả file dockerignore để tránh build những thứ không cần thiết
+
+
+\#12. Build nginx ( đọc là engine-x ) chạy React Production 
+
+ > ⚙️ Vì sao nên dùng NGINX?
+
+Bảo vệ backend: Giấu địa chỉ thật của server backend
+
+Quản lý traffic hiệu quả: Cân bằng tải, xử lý nhiều người truy cập cùng lúc
+
+Hỗ trợ HTTPS: Dễ cài SSL cho website
+
+Phù hợp với Docker, DevOps: Dễ cấu hình, tự động hóa, đóng gói
+
+
+
+	4. Thông não 1 số thứ về nginx 
+
+
+	> với dự án Nextjs thì ta có thể không cần nginx, tuy nhiên với dự án ReactJS sẽ cần 
+
+		> Lí do:
+
+	+ Đầu tiên sau khi ta build xong dự án reactjs thì sẽ sinh ra 1 folder build chứa các file tĩnh và không có server
+
+	+  Nếu ta tiếp tục deploy lên vercel,.. thì trên đó sẽ có 1 server để serve những file tĩnh của react sau khi build 
+
+	+ Tuy nhiên nếu ta tự deploy docker, vps thì ta cần có 1 server để giúp chuyển tiếp các request, và lúc đó nginx ra đời
+
+
+
+	>>> Tham khảo build nginx với React
+
+	+ Bắt đầu từ: https://www.youtube.com/watch?v=TMf0ha4AnKU&list=PLncHg6Kn2JT4kLKJ_7uy0x4AdNrCHbe0n&index=19
+
+ 
+
+\#12. Một số điều cần biết khi deploy dự án với docker 
+
+	1. Trường hợp deploy riêng từng phần ( VD: fe: vercel, be: app platform digital ocean, db: droplet )
+
+	+ Trong trường hợp này ta có thể sử dụng nginx ở 1 droplet riêng sau đó cấu hình đến dự án 
+	
+	+ Do fe đã có webserver riêng phục vụ
+	
+	2. Trường hợp đóng gói chung vào 1 docker stack sau đó deploy
+
+	+ Ở trường hợp này nginx có 1 vai trò rất quan trọng là người điều hướng cho toàn bộ trang web 
+
+	+ Ta cần cấu hình domain trỏ về nginx, từ đó nginx sẽ tiếp nhận request từ user và làm việc với be,fe,db và trả về thông tin cần thiết cho người dùng 
+
+	+ Ta cần cấu hình 1 số thứ ở nginx cũng như fe, be
+	
+	+ nginx có thể dấu domain qua reverse proxy giúp bảo mật 
+
+	> Chi tiết tham khảo link video ở trên 
+
+
+#13. DOCKER EXEC
+
+Câu lệnh docker exec trong Docker được dùng để thực thi (chạy) một lệnh bên trong một container đang chạy.
+
+👉 Nói cách khác: nếu container của bạn đang chạy, bạn có thể “chui” vào trong nó hoặc chạy một lệnh cụ thể mà không cần tạo container mới.
+
+
+VD: Mở shell bên trong container:
+
+docker exec -it my_container bash
+
+
+
+
+
+
+
+	

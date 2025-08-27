@@ -1,0 +1,1044 @@
+1. Hash password with bycypt
+
+https://www.npmjs.com/package/bcrypt
+
++ sử dụng sync 
+
+import bcrypt from "bcrypt";
+
+const hashPassword = async (password) => {
+  const saltRounds = 10;
+  const salt = await bcrypt.genSalt(saltRounds);
+  const hash = await bcrypt.hash(password, salt);
+  return hash;
+};
+
+export { hashPassword };
+
+
+	* Random User id 
+	
+	( https://www.npmjs.com/package/uuid )
+
+
+
+
+2. ORM & Setup Sequelize  ( lưu ý dùng với commonjs để tránh lỗi migration )
+
+	1. ORM
+
++ ORM (Object-Relational Mapping) là một kỹ thuật lập trình cho phép bạn thao tác với cơ sở dữ liệu bằng cách sử dụng object (đối tượng) thay vì viết các câu lệnh SQL thủ công. 
+
+ORM giúp bạn:
+
+	+ Truy vấn, chèn, cập nhật, xóa dữ liệu qua đối tượng JS.
+	+ Không cần viết SQL trực tiếp (hoặc rất ít).
+	+ Dễ bảo trì và phát triển nhanh hơn.
+
+
+	2. Sequelize là gì ?
+
+	+ Sequelize là một ORM cho Node.js hỗ trợ nhiều loại cơ sở dữ liệu như:
+
+	MySQL, PostgreSQL, SQLite, MariaDB
+
+	> Nó giúp bạn định nghĩa models, tạo migration, và tương tác với DB dễ dàng.
+
+	3. Sequelize CLI là gì ?
+
+	+ Không bắt buộc, nhưng nếu bạn muốn dùng migration, seed, tự động tạo folder chuẩn, thì nên dùng sequelize-cli.
+
+	+ sequelize-cli là công cụ dòng lệnh chính thức của Sequelize để giúp bạn:
+
+Tạo folder models, migrations, seeders, config tự động.
+
+Dễ dàng tạo model bằng lệnh: sequelize model:generate
+
+Dễ chạy migration: sequelize db:migrate
+
+Tạo dữ liệu mẫu: sequelize db:seed
+	
+
+
+	4. Setup dự án với Sequelize và Sequelize CLI
+
+	B1.
+
+npm install sequelize 
+npm install --save-dev sequelize-cli
+
+
+	B2. tạo .sequelizerc để config nơi tạo ra các: config, migrations, models, seeders 
+
+
+const path = require('path');
+
+module.exports = {
+  'config': path.resolve('src', 'config', 'config.json'),
+  'models-path': path.resolve('src', 'models'),
+  'seeders-path': path.resolve('src', 'seeders'),
+  'migrations-path': path.resolve('src', 'migrations'),
+};
+
+
+
+	B3. 
+
+npx sequelize-cli init
+
+
+	* Setup database và tiến hành tạo bảng đầu tiên 
+
+	B1. Connecting to a database and Testing the connection
+
+
+	( https://sequelize.org/docs/v6/getting-started/ )
+
+	src/config/connectDB.js 
+
+const { Sequelize } = require('sequelize');
+
+const sequelize = new Sequelize('database', 'username', 'password', {
+  host: 'localhost',
+  dialect: /* one of 'mysql' | 'postgres' | 'sqlite' | 'mariadb' | 'mssql' | 'db2' | 'snowflake' | 'oracle' */,
+  port: number
+});
+	
+const connection = async () => {
+  try {
+    await sequelize.authenticate();
+    console.log("Connection has been established successfully.");
+  } catch (error) {
+    console.error("Unable to connect to the database:", error);
+  }
+};
+
+export default connection;
+
+	server.js
+
+connection();
+
+
+	B2: Creating first model 
+
+( https://sequelize.org/docs/v6/other-topics/migrations/ )
+
+npx sequelize-cli model:generate --name User --attributes firstName:string,lastName:string,email:string
+
+	
+	B3: Running migration 
+
+
+npx sequelize-cli db:migrate
+
+	* Lưu ý: Congfig database và config.json sao cho đúng ( port ) để tránh lỗi migration và sử dụng commonjs 
+	
+	B4: Thêm dữ liệu mẫu = seeder 
+
+npx sequelize-cli seed:generate --name demo-user
+
+	B5: Running seed
+
+npx sequelize-cli db:seed:all
+
+	
+
+
+3. ORM Structure - Ý nghĩa của Model/Migrations/Seeder 
+
+	1. config/config.json 
+
+Chứa thông tin cấu hình kết nối cơ sở dữ liệu cho từng môi trường:
+
+development: môi trường phát triển
+
+test: môi trường test
+
+production: môi trường production
+
+> Sequelize CLI sử dụng file này để biết cách kết nối vào database khi chạy các lệnh như db:migrate, db:seed...
+
+
+
+	2. models/
+
+
+Tác dụng:
+
+Nơi định nghĩa các model (bảng trong database).
+
+Mỗi file là một model tương ứng với 1 bảng.
+
+File index.js trong thư mục này sẽ tự động import và liên kết các model với nhau (nếu có quan hệ).
+
+
+	3. migrations/
+
+Tác dụng:
+
+Chứa các file mô tả sự thay đổi cấu trúc CSDL theo thời gian (schema migration).
+
+Giúp quản lý version và lịch sử thay đổi schema.
+
+Có thể rollback hoặc migrate tới một trạng thái bất kỳ.
+
+> Khi chạy sequelize db:migrate, các file này sẽ được thực hiện để tạo/cập nhật bảng trong DB.
+
+
+	*  Tác dụng của các function up và down trong file Migration
+
++ up(queryInterface, Sequelize)
+
+Là hàm được gọi khi bạn chạy migration (sequelize db:migrate).
+
+Tác dụng: tạo hoặc chỉnh sửa bảng, thêm cột, thêm chỉ mục, v.v.
+
+Nói đơn giản là "áp dụng thay đổi mới vào CSDL".
+
+
++ down(queryInterface, Sequelize)
+
+Là hàm được gọi khi bạn rollback migration (sequelize db:migrate:undo hoặc db:migrate:undo:all).
+
+Tác dụng: hoàn tác những gì up() đã làm.
+
+Nói đơn giản là "trở về trạng thái cũ".
+
+
+	* Bảng SequelizeMeta là gì?
+
+
+Bảng này được Sequelize tự động tạo ra trong CSDL.
+
+Mục đích: theo dõi các migration đã được chạy.
+
+Mỗi khi bạn chạy sequelize db:migrate, Sequelize:
+
+Chạy các file migration chưa có tên trong bảng SequelizeMeta.
+
+Sau khi chạy xong, nó sẽ chèn tên file migration vào bảng này để đánh dấu là đã chạy.
+
+
+	4. seeders/
+
+Tác dụng:
+
+Chứa các file dùng để thêm dữ liệu mẫu vào cơ sở dữ liệu (dùng cho dev/test/demo).
+
+Thêm nhiều dữ liệu mẫu chứ k phải làm việc CRUD
+
+Có thể tạo dữ liệu ban đầu cho bảng người dùng, sản phẩm, v.v.
+
+
+		
+✅ Tổng kết
+Thư mục/file		Vai trò chính
+config/config.json	Kết nối CSDL cho từng môi trường
+models/			Định nghĩa cấu trúc bảng (Model)
+migrations/		Quản lý thay đổi schema CSDL
+seeders/		Tạo dữ liệu mẫu ban đầu
+
+
+
+	*Lưu ý: mặc định khi tạo table sẽ thêm s sau tên. mặc dù nó không quan trọng lắm 
+
+
+ "development": {
+    "username": "root",
+    "password": "1208",
+    "database": "jwt-roles",
+    "host": "127.0.0.1",
+    "dialect": "mysql",
+    "port": "8888",
+    "define": {
+      "freezeTableName": true 
+    }
+  },
+
+	> sử dụng freezeTableName để cho nó không tự động thêm s 
+
+
+
+
+4. CRUD với Sequelize 
+
+	( https://sequelize.org/docs/v6/core-concepts/model-querying-basics/ )
+ 
+	
+	1. CREATE (Tạo mới dữ liệu) 
+
+const user = await User.create({
+  name: 'Nguyễn Văn A',
+  email: 'nguyenvana@example.com'
+});
+
+> Sequelize sẽ tự động tạo câu lệnh INSERT INTO dựa trên model User. 
+
+
+ 	2. READ (Đọc dữ liệu)
+	
+
+👉 Tìm tất cả bản ghi:
+
+	const users = await User.findAll();
+
+👉 Tìm theo điều kiện:
+
+	const user = await User.findOne({
+  where: { email: 'nguyenvana@example.com' }
+});
+
+👉 Tìm theo ID:
+
+const user = await User.findByPk(1); // Tìm theo primary key
+
+
+	3. UPDATE (Cập nhật dữ liệu)
+
+await User.update(
+  { name: 'Nguyễn Văn B' },
+  { where: { id: 1 } }
+);
+
+> Sequelize sẽ tạo câu lệnh UPDATE tương ứng.
+
+	
+	4. DELETE (Xoá dữ liệu)
+
+await User.destroy({
+  where: { id: 1 }
+});
+
+
+	Lưu ý:
+
+Tại sao kết quả trả về là Sequelize instance (Entity) nhưng vẫn render ra object JSON trong EJS?
+	
+	+ Sequelize instance (như user bạn nhận được) có sẵn phương thức .toJSON() và toString(), nên khi bạn truyền vào EJS hoặc console.log(JSON.stringify(user)), nó tự động chuyển thành plain object.
+
+	=> k cần viết: 
+const plainUser = user
+
+	> .get({ plain: true }); // Tương đương với toJSON 
+	
+	hoặc 
+
+ let user = await db.User.findOne({
+      where: { email: data.email },
+      raw: true,
+    });
+
+
+5. MongoDB vs MySQL
+
+
+	1. MongoDB (NoSQL)
+	
+	+ Dữ liệu dạng document(JSON)
+	+ linh hoạt, k cần schema 
+	+ không hỗ trợ join truyền thống 
+	+ tốt cho dữ liệu phi cấu trúc 
+	+ linh hoạt, dễ scale 
+
+
+	2. MySQL (SQL)
+
+	+ Dữ liệu dạng bảng 
+	+ cần schema cố định 
+	+ hỗ trợ join mạnh 
+	+ tốt cho dữ liệu quan hệ 
+	+ tuân thủ ACID 
+
+🔹 Nên dùng khi nào?
+
+MySQL: App tài chính, CRM, ERP, cần JOIN và tính chính xác cao.
+
+MongoDB: Social app, MVP, dữ liệu linh hoạt, scale lớn, cần phát triển nhanh.
+
+
+Ví dụ dự án phù hợp SQL:
+
+Hệ thống ngân hàng, kế toán (quan hệ phức tạp, cần tính chính xác).
+
+Website thương mại điện tử (quản lý sản phẩm, khách hàng, đơn hàng).
+
+Ứng dụng quản lý trường học (lớp học, sinh viên, điểm số).
+
+Bất cứ app nào mà tính nhất quán dữ liệu là số 1.
+
+
+Ví dụ dự án phù hợp NoSQL:
+
+Mạng xã hội (bài đăng, bình luận, like… lưu dạng document).
+
+Realtime chat (WebSocket + MongoDB/Redis).
+
+Hệ thống log, analytics, tracking (dữ liệu khổng lồ, cần lưu nhanh).
+
+Game online (trạng thái người chơi, leaderboard…).
+
+
+6. Khái niệm ACL 
+
+	+ Access Control List (ACL) trong backend là một kỹ thuật để kiểm soát quyền truy cập của người dùng hoặc nhóm người dùng đến các tài nguyên cụ thể trong hệ thống (như API, file, dữ liệu...).
+
+
+	+ 🔐 ACL dùng để làm gì?
+
+Kiểm soát ai có quyền xem / chỉnh sửa / xoá / tạo gì
+
+Bảo mật hệ thống
+
+Phân quyền rõ ràng cho từng user, role	
+
+
+7. Các kiểu dữ liệu của Sequelize 
+
+( https://sequelize.org/docs/v6/core-concepts/model-basics/#data-types )
+
+
+
+8. Create Model(Table) with Sequelize 
+
+	+ để tạo 1 model và push vào database ta cần 
+
+
+	C1. Tạo auto với câu lệnh
+
+
+npx sequelize-cli model:generate --name User --attributes firstName:string,lastName:string,email:string
+
+
+
+	C2. tự tạo thủ công bằng việc tạo file trong model và migration
+
+	* Lưu ý: Tên file bên trong migration là: migrate-....
+
+
+	> sau khi oke cả migration và model chạy 
+
+	npx sequelize-cli db:migrate
+
+	
+Chú ý: để tránh cho tên k đúng như đặt bị thêm S trong config.json thêm: 
+
+
+"port": "8888",
+
+"define": {
+      "freezeTableName": true 
+    }
+
+
+
+
+
+9. Relationship in Sequelize 
+
+	( https://sequelize.org/docs/v6/core-concepts/assocs/ )
+	( https://sequelize.org/docs/v6/advanced-association-concepts/eager-loading/ )
+
+	1. Thuật ngữ Eager Loading 
+
+	+ Eager Loading trong Sequelize là kỹ thuật tải trước (preload) các dữ liệu liên quan giữa các bảng (models) trong cùng một truy vấn SQL thông qua include, giúp tránh việc truy vấn lặp lại nhiều lần (N+1 queries problem).
+
+	📌 Hiểu đơn giản:
+
+Thay vì lấy dữ liệu bảng chính rồi lại truy vấn riêng để lấy dữ liệu bảng liên quan, Sequelize cho phép bạn lấy tất cả cùng lúc.
+
+
+	2. Relationship 
+
+
+	>> Thông thường ta có các mối quan hệ như sau 
+
+	> One-to-One 
+	> One-to-Many 
+	> Many-to-Many 
+
+	
+	>> Sequelize provie 4 kiểu relationship thay thế
+
+	The HasOne association
+	The BelongsTo association
+	The HasMany association
+	The BelongsToMany association
+
+
+		1. A.hasOne(B)
+
+	+ Quan hệ: One-To-One
+	+ Foreign key nằm ở: model B (target)
+
+
+		2. A.belongsTo(B)
+
+	Quan hệ: One-To-One
+	Foreign key nằm ở: model A (source)
+
+		
+		3. A.hasMany(B)
+
+	Quan hệ: One-To-Many
+	Foreign key nằm ở: model B (target)
+	
+
+		4. A.belongsToMany(B, { through: 'C' })
+
+	Quan hệ: Many-To-Many
+	Sử dụng bảng trung gian: C (junction table)
+	Sequelize sẽ tự tạo bảng C với các khóa ngoại (như aId, bId) nếu chưa có.
+
+VD: 
+
+module.exports = (sequelize, DataTypes) => {
+  class Group extends Model {
+    /**
+     * Helper method for defining associations.
+     * This method is not a part of Sequelize lifecycle.
+     * The `models/index` file will call this method automatically.
+     */
+    static associate(models) {
+
+      Group.hasMany(models.User);
+      Group.belongsToMany(models.Role, { through: "GroupRole" });
+
+    }
+  }
+
+
+
+  	
+	3.Sử dụng include
+
+	+ Sử dụng inclue của sequelize cũng giống như đang sử dụng JOIN 
+
+	VD: 
+
++ Ta có 2 model như sau: 
+
+// User model
+User.hasMany(Post); // Một user có nhiều bài post
+
+// Post model
+Post.belongsTo(User); // Một post thuộc về một user
+
+
+> Truy vấn lấy ra tất cả user và bài viết tương ứng với id của họ: 
+
+const users = await User.findAll({
+  include: Post, // hoặc { model: Post }
+});
+
+Điều này tương đương với:
+
+" SELECT * FROM Users
+LEFT OUTER JOIN Posts ON Users.id = Posts.UserId; "
+
+
+	* include nâng cao 
+
+3.1. Chỉ lấy một số cột từ bảng liên kết:
+
+const users = await User.findAll({
+  include: {
+    model: Post,
+    attributes: ['title', 'createdAt']
+  }
+});
+
+3.2. Điều kiện lọc trong include
+
+const users = await User.findAll({
+  include: {
+    model: Post,
+    where: {
+      published: true
+    }
+  }
+});
+
+
+
+	
+	4. Xử lý lỗi có 2 foreign key khi tự khai báo và sequelize generate 
+
+	 
+	VD:
+
+	User.belongsTo(models.Group);
+	groupID: DataTypes.INTEGER,
+
+	> sẽ có 2 foreign key được sinh ra 
+
+	+ Khắc phục bằng cách chủ động đưa khai báo foreign key cho nó
+
+User.belongsTo(models.Group, {
+  foreignKey: "groupID" // dùng chính cột bạn định nghĩa
+});
+
+	
+	5. k in ra dữ liệu từ bảng trung gian 
+
+ include: {
+      model: db.Role,
+      attributes: ["id", "url", "description"],
+      through: { attributes: [] },
+    },
+
+
+	> through
+
+
+
+10. CORS là gì ? 
+
+	Q: thông thường khi ta gọi API từ FE đến BE mà có 2 domain khác nhau thì sẽ gặp lỗi CORS. Vậy nó là gì ?
+
+	
+	+ Khái niệm: 
+
+CORS (viết tắt của: Cross-Origin Resource Sharing): là một cơ chế bảo mật của trình duyệt, giúp kiểm soát xem một website (gọi là origin) có được phép truy cập tài nguyên từ một website khác hay không.
+
+	VD: 
+
+Origin = protocol + domain + port
+
+Ví dụ:
+
+https://example.com:443
+
+http://localhost:3000
+
+Nếu hai origin khác nhau (khác protocol, domain hoặc port), thì khi frontend gửi request tới backend ở origin khác, đó được gọi là cross-origin request.
+
+
+	2️⃣ Tại sao CORS tồn tại?
+	
+	+ CORS sinh ra giúp chặn các request lạ đến BE mà không được cho phép, trừ khi ta cho phép thông qua header  Access-Control-Allow-Origin.
+
+
+	3️⃣ Cách hoạt động cơ bản của CORS
+
+	B1: Khi frontend (ở origin A - khác domain) gửi request đến backend (ở origin B - khác 	domain), trình duyệt sẽ gửi kèm theo một CORS check.
+
+	B2: Nếu server B phản hồi với header Access-Control-Allow-Origin: A thì trình duyệt mới cho 	phép lấy dữ liệu.
+
+	B3: Nếu không có header này, trình duyệt sẽ chặn response (mặc dù request có thể đã được gửi 	thành công từ phía server).
+
+
+👉 Tóm lại:
+CORS là cơ chế kiểm soát bảo mật quan trọng của trình duyệt, bảo vệ server khỏi việc bị gọi từ những website không được phép.
+
+	
+
+	
+	2. Xử lý CORS bên server
+
+	( https://stackoverflow.com/questions/18310394/no-access-control-allow-origin-node-apache-port-issue )
+
+// server.js
+
+// Add headers before the routes are defined
+app.use(function (req, res, next) {
+
+    // Website you wish to allow to connect
+    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:8888');
+
+    // Request methods you wish to allow
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+
+    // Request headers you wish to allow
+    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+
+    // Set to true if you need the website to include cookies in the requests sent
+    // to the API (e.g. in case you use sessions)
+    res.setHeader('Access-Control-Allow-Credentials', true);
+
+    // Pass to next layer of middleware
+    next();
+});
+
+
+11. Session Storage vs Local Storage vs Cookies
+
+	 1. Local Storage 
+		
+		+ Dữ liệu được lưu vĩnh viễn cho đến khi chủ động thay đổi
+		
+		+ Dung lượng khá lớn (thường từ 5MB đến 10MB, tùy trình duyệt).
+		
+		+ Dữ liệu chỉ có thể truy cập được bởi cùng domain đã tạo ra nó.
+		
+		+ Chỉ hỗ trợ lưu dữ liệu dạng chuỗi (string), nên nếu muốn lưu object phải dùng JSON.stringify() và JSON.parse() để chuyển đổi.
+		
+		+ Không tự động gửi dữ liệu lên server trong mỗi request HTTP.
+		
+		+ Phù hợp để lưu những dữ liệu không nhạy cảm như theme (light/dark), user preference, token tạm thời...
+
+
+	2️⃣ Session Storage
+
+
+Giống gần như y hệt Local Storage về cơ chế lưu trữ, nhưng chỉ tồn tại trong 1 phiên làm việc (session).
+
+Khi người dùng đóng tab hoặc trình duyệt => dữ liệu bị xóa.
+
+Cũng có dung lượng khá lớn (5MB trở lên).
+
+Cũng không gửi kèm dữ liệu lên server khi gọi API.
+
+Thường dùng để lưu các dữ liệu tạm thời như form đang nhập dở, bước hiện tại của 1 wizard, v.v.
+
+	
+	3️⃣ Cookies
+
+
+Dữ liệu có thể được lưu trong 1 thời gian xác định (tùy expires hoặc max-age) hoặc phiên làm việc.
+
+Dung lượng rất nhỏ, thường giới hạn ~4KB.
+
+Quan trọng: cookie được gửi tự động lên server trong mỗi request HTTP (nếu cùng domain, cùng path, security rule cho phép).
+
+Thích hợp để lưu thông tin cần gửi kèm server mỗi lần gọi như: session id, JWT token, tracking info, v.v.
+
+Có thể cấu hình bảo mật như Secure, HttpOnly, SameSite để hạn chế rủi ro (XSS, CSRF…).
+
+Cookies có thể truy cập từ cả client-side (nếu không đặt HttpOnly) hoặc chỉ server-side.
+
+
+
+
+11. JWT - JSON Web Token 
+
+	✅ 1. JWT là gì?
+
+Là một chuỗi token mã hóa, đại diện cho thông tin người dùng đã xác thực.
+
+Giúp xác minh danh tính và đảm bảo rằng dữ liệu truyền giữa client và server là đáng tin cậy và không bị giả mạo.
+
+	✅ 2. Cấu trúc của JWT
+
+	JWT có 3 phần chính, được ngăn cách bằng dấu . (dot):
+
+	<Header>.<Payload>.<Signature>
+
+		✅ 1. Header:
+			
+		{
+ 		 "alg": "HS256",
+  		"typ": "JWT"
+		}
+
+alg: thuật toán dùng để ký (thường là HS256).
+
+typ: kiểu token (luôn là JWT).
+
+		✅ 2. Payload:
+
+Chứa dữ liệu (claims) như user ID, username, vai trò...
+
+Có thể có các claims chuẩn: iss (issuer), exp (expiration), sub (subject), iat (issued at).
+		
+
+		✅ 3. Signature:
+		Dùng để xác minh tính toàn vẹn của token.
+
+		Được tạo bằng công thức:	
+	
+		HMACSHA256(
+  base64UrlEncode(header) + "." + base64UrlEncode(payload),
+  secret
+)
+
+	✅ 3. Cách JWT hoạt động
+
+🧩 Bước 1: Đăng nhập
+Client gửi thông tin đăng nhập (username, password) đến server.
+
+Server xác minh -> nếu hợp lệ, tạo JWT và trả về cho client.
+
+
+🧩 Bước 2: Sử dụng token
+Client lưu JWT (thường trong localStorage hoặc cookie).
+
+Mỗi request tiếp theo đến server đều đính kèm token qua Authorization header:
+
+Authorization: Bearer <token>
+
+
+🧩 Bước 3: Server xác minh token
+Server dùng secret/key để giải mã và xác minh chữ ký.
+
+Nếu hợp lệ → xử lý request. Nếu không hợp lệ → trả về lỗi 401.
+
+✅ 4. Vai trò quan trọng của JWT
+
+Vai trò				Ý nghĩa
+🔐 Xác thực			Giúp xác minh user đã đăng nhập chưa
+📜 Không trạng thái (Stateless)	Server không cần lưu session — tất cả nằm trong token
+🎯 Phân quyền			Dễ dàng kiểm tra role/permission trong payload
+⚡ Nhanh & tiện lợi		Không phải truy vấn database mỗi lần xác minh
+🌐 Phổ biến			Được dùng rộng rãi trong API RESTful, SPA, microservices, v.v.
+
+
+✅ 5. Lưu ý bảo mật khi dùng JWT
+
+Không nên lưu token trong localStorage nếu muốn tránh XSS (nên dùng HttpOnly Cookie).
+
+Token cần hết hạn (exp) để tránh bị sử dụng lâu dài.
+
+Dùng HTTPS để bảo vệ token khỏi bị đánh cắp trên mạng.
+
+Không nên lưu thông tin nhạy cảm trong payload (vì nó không được mã hóa, chỉ được mã hóa chữ ký).
+
+
+✅ 6. Mối quan hệ cụ thể giữa JWT và Cookies
+
+
+	✅ Ví dụ mối quan hệ: JWT lưu trong Cookie
+
+	🧾 Bước 1: Sau khi đăng nhập thành công
+	Server tạo JWT, sau đó set vào cookie:
+
+	Set-Cookie: token=eyJhbGci...; HttpOnly; Secure; SameSite=Strict
+
+
+	🌐 Bước 2: Trình duyệt lưu cookie
+	Cookie chứa JWT sẽ được lưu và gửi tự động trong các request tiếp theo:
+	
+	🔐 Bước 3: Server xác thực JWT từ cookie
+	Server lấy JWT từ cookie → xác minh → nếu hợp lệ thì cho truy cập tài nguyên.
+
+
+	
+12. Sử dụng JWT 
+
+	( https://github.com/auth0/node-jsonwebtoken )
+	
+	+ Để sử dụng token ta cần phải tạo và verify nó 
+
+	+ Sẽ có 2 cách viết. tuy nhiên ta sẽ thống nhất dùng cách đồng bộ để k cần truyền callback, dùng async/await 
+
+	VD: hàm create JWT và verify JWT
+
+const createJWT = () => {
+  try {
+    let data = {
+      foo: "car",
+    };
+   let token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "1h" });
+    return token;
+  } catch (error) {
+    console.log("Wrong");
+    return null;
+  }
+};
+
+const verifyJWT = (token) => {
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    return decoded;
+  } catch (err) {
+    console.log("Wrong");
+    return null;
+  }
+};
+
+
+
+13. Sử dụng cookie-parser 
+
+	KN: 
+
+	cookie-parser là một middleware phổ biến trong Node.js (thường dùng với Express.js) giúp phân tích (parse) các cookie được gửi từ client trong các HTTP request. Khi client gửi request đến server, các cookie được gửi kèm trong header, và cookie-parser giúp bạn dễ dàng truy cập và xử lý chúng.
+
+
+	Cách sử dụng: 
+
+const express = require('express');
+const cookieParser = require('cookie-parser');
+
+const app = express();
+
+// Dùng middleware cookie-parser
+app.use(cookieParser('your-secret-key'));
+
+
+	Tính năng 
+
+Tính năng	Mô tả
+Parse cookie	Biến Cookie trong request.headers thành đối tượng JavaScript.
+
+Hỗ trợ signed cookies	Dùng secret key để bảo vệ cookie, tránh bị sửa từ client.
+
+Truy cập dễ dàng qua req.cookies và req.signedCookies	
+
+	
+	* Lưu ý: res.cookie() có sẵn trong express nhưng req.cookie thì không 
+
+
+	VD:
+
+	+ sau khi login ta sẽ set cookie vào web với các giá trị nhất định 
+
+const signInUser = async (req, res) => {
+  try {
+    const data = await handleSignIn(req.body);
+
+    // Set Cookie
+    res.cookie("jwt", data.DT.access_token, { httpOnly: true });
+
+    return res.status(200).json({
+      EM: data.EM,
+      EC: data.EC,
+      data: data.DT,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      EM: "Error from server",
+      EC: "-1",
+      data: "",
+    });
+  }
+};
+
+	> tuy nhiên sẽ có lỗi xảy ra và ta cần phải chỉnh sửa ở axios config mới có thể set dc cookie 
+
+	 + instance.defaults.withCredentials = true;
+	
+	Giải thích: 
+
+ Khi bạn gửi request từ trình duyệt đến một origin khác (cross-origin request), trình duyệt sẽ KHÔNG gửi cookie kèm theo nếu bạn không bật withCredentials.
+
+Mặc định axios sẽ KHÔNG gửi cookie kèm theo trong request khi frontend và backend khác origin.
+
+withCredentials: true yêu cầu axios gửi cookie (hoặc nhận cookie) trong request dù request đó là cross-origin.
+
+
+	+ có cái này khi client gửi req lên server sẽ gửi kèm tất cả cookie của web mà thỏa mãn điều kiện lên ()
+	
+	
+	>> ta có thể tự custome req. theo ý mình: 
+
+  if (decoded) {
+      req.user = decoded;
+      next();
+    } else {
+
+
+
+14. Bearer Authentication - Xác thực với Header Token 
+
+	1. Bearer Authentication 
+	
+	+ là phương pháp xác thực trong đó client gửi token trong phần Authorization header của HTTP request để chứng minh danh tính.
+
+	Cú pháp: Authorization: Bearer <token>
+
+
+✅ Khi nào dùng cái nào?
+Trường hợp sử dụng				Nên dùng gì
+App SPA (React, Vue, Angular)			Bearer Token (hoặc JWT token-based)
+Web truyền thống (SSR: PHP, Laravel, Django...)	Cookie
+Cần bảo mật cao (tránh XSS)			Cookie + HttpOnly
+Cần tránh CSRF					Bearer Token hoặc Cookie với SameSite=strict
+
+	
+	2. Sử dụng bearer token sao cho không bị lỗi CORS 
+	
+	+ Thông thường ta sẽ lưu token ở localstorage sau đó truyền qua header authorization 
+
+	> sử dụng với axios 
+
+	instance.defaults.headers.common[
+  "Authorization"
+] = `Bearer ${localStorage.getItem("token")}`;
+
+	
+	+ Ta cần phải config thêm bên server để tránh lỗi 
+
+ res.setHeader(
+      "Access-Control-Allow-Headers",
+      "X-Requested-With,content-type, Authorization"
+    );
+
+    // Set to true if you need the website to include cookies in the requests sent
+    // to the API (e.g. in case you use sessions)
+    res.setHeader("Access-Control-Allow-Credentials", true);
+
+    if (req.method === "OPTIONS") {
+      return res.sendStatus(200);
+    }
+
+	> Thêm authorization và return status 
+
+
+
+15. Mở rộng. Bảo mật JWT token và các loại hình tấn công 
+
+🔒 Kết luận:
+Nên dùng cookie có flag HttpOnly + Secure + SameSite=Strict/Lax nếu bạn muốn bảo mật JWT tối đa.
+
+
+⚠️ 2. Những kiểu tấn công phổ biến liên quan đến JWT (và web app nói chung)
+
+a. XSS (Cross-Site Scripting)
+Kẻ tấn công chèn mã JavaScript độc vào trang web (ví dụ: trong form, comment, URL…)
+
+Nếu JWT lưu ở localStorage, JS có thể localStorage.getItem('token') và gửi token về server của hacker.
+
+
+b. CSRF (Cross-Site Request Forgery)
+Tấn công khi dùng cookie-based auth
+
+Ví dụ: người dùng đã đăng nhập vào bank.com, hacker gửi 1 yêu cầu giả mạo từ evil.com, trình duyệt vẫn gửi cookie theo mặc định.
+
+
+	Dùng SameSite=Strict hoặc Lax trong cookie
+
+....
+
+16. Refresh token.
+
+🔐 1. Refresh Token là gì?
+Access Token: Là token chính để truy cập API. Thường có thời gian sống ngắn (ví dụ: 15 phút, 1 giờ) để giảm thiểu rủi ro nếu bị lộ.
+
+Refresh Token: Là token dài hạn hơn (có thể sống vài ngày, vài tuần), dùng để xin cấp lại Access Token mới mà không cần người dùng đăng nhập lại.
+
+
+🔁 2. Nguyên lý hoạt động
+
+Giả sử hệ thống sử dụng JWT, đây là cách hoạt động:
+
+🔹 Khi người dùng đăng nhập:
+Server xác thực thông tin tài khoản.
+
+Server trả về cho client:
+
+accessToken (hạn 15 phút chẳng hạn)
+
+refreshToken (hạn 7 ngày hoặc hơn)
+
+🔹 Khi accessToken hết hạn:
+Client tự động gửi refreshToken lên server (qua endpoint như /refresh-token).
+
+Server kiểm tra tính hợp lệ của refreshToken:
+
+Nếu hợp lệ → cấp lại accessToken mới (và có thể là refreshToken mới).
+
+Nếu không hợp lệ → yêu cầu người dùng đăng nhập lại.
+
+🔹 Khi người dùng logout:
+Server sẽ xóa hoặc vô hiệu hóa refreshToken.
+
+
+
+
+
+
+
+	
+	
+	

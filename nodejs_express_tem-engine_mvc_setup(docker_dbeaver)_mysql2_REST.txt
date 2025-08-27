@@ -1,0 +1,1606 @@
+Chapter 0: Introduction to Backend Developer
+
+	1. Backend dev là gì
+
++ Backend (hay còn gọi là phía máy chủ) là phần phía sau của một ứng dụng hoặc website – nơi xử lý dữ liệu, logic, và tương tác với cơ sở dữ liệu, máy chủ, hoặc API. Đây là phần người dùng không nhìn thấy được, nhưng đóng vai trò cực kỳ quan trọng.
+
+
+🔧 Các chức năng chính của Backend:
+
+Xử lý logic ứng dụng: Như tính toán, kiểm tra điều kiện, phân quyền người dùng...
+
+Kết nối với cơ sở dữ liệu: Lưu trữ, truy xuất, cập nhật, hoặc xoá dữ liệu.
+
+Xác thực người dùng: Đăng nhập, đăng ký, phân quyền...
+
+Xử lý API: Gửi và nhận dữ liệu giữa client (frontend) và server.
+
+Bảo mật: Mã hoá dữ liệu, bảo vệ khỏi tấn công (như SQL Injection, XSS…).
+
+
+🛠 Các công nghệ phổ biến trong Backend:
+
+Công nghệ	Vai trò
+Ngôn ngữ	JavaScript (Node.js), Python (Django, Flask), PHP, Ruby, Java, C#...
+
+Cơ sở dữ liệu	MySQL, PostgreSQL, MongoDB, SQLite...
+
+Máy chủ (server)	Apache, Nginx, Express (Node.js)...
+
+API	RESTful API, GraphQL...
+
+
+🔄 So sánh Frontend và Backend:
+
+Tiêu chí	Frontend	Backend
+
+Hiển thị	Người dùng nhìn thấy	Người dùng không nhìn thấy
+
+Vai trò		Giao diện, tương tác người dùng	Xử lý dữ liệu, logic, kết nối cơ sở dữ liệu
+
+Công nghệ	HTML, CSS, JavaScript (React, Vue…)	Node.js, Python, Java, C#, PHP...
+
+
+	2. SSR và CSR, 2 cách làm việc với BE
+
+
+🖥️ SSR (Server-Side Rendering) — ví dụ dùng EJS, Pug:
+
+Back-end (BE) sẽ xử lý:
+
+Lấy dữ liệu từ database.
+
+Render dữ liệu trực tiếp vào HTML (thường thông qua template engine như EJS, Pug).
+
+FE (Front-end) chỉ là kết quả HTML đã được render sẵn, trình duyệt nhận và hiển thị luôn.
+
+>>>>>
+
+	+ Ưu điểm:
+
+Tốt cho SEO.
+
+Hiển thị nhanh nội dung cho người dùng.
+
+	+ Nhược điểm:
+
+Mỗi lần chuyển trang là reload lại trang mới.
+
+Khó tương tác động so với SPA.
+
+🧠 CSR (Client-Side Rendering) — thường dùng với React, Vue, v.v.
+
+Back-end chỉ cung cấp RESTful API (hoặc GraphQL).
+
+Front-end (React/Vue) sẽ:
+
+Gọi API để lấy dữ liệu.
+
+Tự động render dữ liệu lên giao diện trong trình duyệt.
+
+	+ Ưu điểm:
+
+Trải nghiệm người dùng mượt mà, không reload.
+
+Dễ phát triển các app phức tạp.
+
+	+ Nhược điểm:
+
+SEO không tốt nếu không dùng thêm công nghệ hỗ trợ như Next.js.
+
+Lần đầu tải có thể chậm vì phải load JS rồi mới gọi API.
+
+
+
+Chapter 1: Website hoạt động như nào ?
+
+#1. Xây dựng chức năng của 1 website
+
+> Một website dù phức tạp đến đâu, đều xoay quanh các tính năng về CRUD.
+
+	+ CRUD là viết tắt của Create, Read, Update và Delete.
+
+	1. Create (C) : thêm mới
+	+ Create: tạo ra 1 cái gì đấy mới, tạo ra thêm dữ liệu
+
+	Ví dụ: bạn đăng 1 bài post facebook để cập nhật trạng thái
+	=> góc nhìn dev: user CREATE a new post
+
+
+	2. Read (R) : hiển thị (đọc thông tin hiển thị)
+	+ Read: là chức năng giúp hiển thị thông tin
+
+	ví dụ: bạn lướt newFeed facebook để cập nhật thông tin của bạn bè, 'đọc' các thông 	tin mới.
+	=> góc nhìn dev: hiển thị (READ) các bài post
+
+	3. Update (U): cập nhật thông tin
+
+	ví dụ: bạn đăng 1 bài post, phát hiện lỗi chính tả => nhấn nút edit để sửa, sau đấy 	nhấn nút 'save' để xác nhận cập nhật
+	=> góc nhìn dev: thực hiện update thông tin với bài post cần cập nhật
+
+	
+	4. Delete (D): xóa thông tin
+
+	ví dụ: bài post bạn đăng lên tạo sóng gió trên mạng xã hội, gây cho bạn nhiều phiền
+	phức. vì vậy bạn lựa chọn option delete để khiến cho bài post biến mất
+
+	=> góc nhìn dev: thực hiện delete bài post được yêu cầu
+
+
+	5. Xây dựng tính năng
+
+	+ Một tính năng dù phức tạp đến đâu, đều phân theo CRUD. Nếu khác, đấy chính là 	logic xử lý
+
+=> cần tính toán xử lý trước khi thực hiện 1 hành động.
+
+Bất kỳ dự án nào, tính năng đều gói gọn với CRUD
+=> học 1 framework/language => thực hành CRUD
+
+
+
+#2. Mô hình hoạt động 
+
+Mô hình client-server:
+
+https://developer.mozilla.org/en-US/docs/Learn/Common_questions/What_is_a_web_server
+
+
+1. Định nghĩa
+
+- Client (người dùng/user): người sử dụng website bằng công cụ,
+ví dụ: trình duyệt web (browser: Google Chrome, Firefox...)
+
+
+- Server (máy chủ): gồm 2 thành phần
++ tên miền (domain) : là 1 tên dễ nhớ, giúp client có thể nhớ, gõ vào trình duyệt và sử
+dụng
++ nơi hosting files: là 1 máy tính trên cloud (kết nối internet), lưu trữ tất cả mã nguồn
+của website
+
++ Hiểu đơn giản, server là 1 máy tính hoạt động 24/24, giúp 1 website hoạt động.
+
+
+2. Mô hình 
+
+Ở đây, mô hình sẽ là yêu cầu <-> phản hồi (request <-> response)
+
+	> client -> gửi request lên server
+
+(Bạn A gõ facebook.com, enter và ngồi chờ website load giao diện Facebook.com -
+mong muốn sử dụng website)
+
+	> server -> gửi response cho client (Server nhận đc yêu cầu của client, sẽ tạo giao diện website và gửi lại kết quả - giao diện website facebook)
+
+
+
+#3. Vận hành 1 website
+
+	1. Chạy localhost
+
+(local tức là chạy tại máy tính cá nhân, bạn bè (của bạn) không thể dùng đường link
+localhost để chạy và sử dụng website được)
+
+
++ client: chính là bạn luôn (mở website, gõ đường link và sử dụng)
++ server: còn ai ở đây nữa (ngoài bạn thì còn ai khác :v).
+việc bạn code, sau đấy gõ lệnh sẽ giúp chạy server tại máy tính bạn.
+
+>>>>
++ ưu điểm: bạn kiểm soát mã nguồn, thích làm gì thì làm => đây là quá trình xây dựng
+website từ con số 0 (làm từ đầu)
+
++ nhược điểm: chạy local (máy tính của bạn), người khác không thể sử dụng được
+localhost
+
+
+	2. Chạy với hosting
+
+gồm 2 bước: mua tên miền và mua hosting
+
+B1: Tên miền (domain) là 1 tên dễ nhớ, bằng chữ, ví dụ: facebook.com, twitter.com
+
+B2: Mua hosting và deploy code của bạn lên đấy. Việc mua hosting sẽ cho bạn 1 địa chỉ IP (IP của server, ví dụ: 192.168.1.69), đồng thời cung cấp nguồn tài nguyên để bạn triển khai (deploy) code local lên lưu trữ tại đây.
+
+B3: Sau khi deploy xong, bạn cần mapping domain với cái IP hosting này.
+
+
+	>>>>> Hiểu đơn giản là như này: <<<<<
+
+
+B1: bạn bỏ tiền ra mua 1 tên miền (domain).
+
+Tên miền là duy nhất (unique), thành ra, bạn phải nghĩ ra và mua 1 cái tên chưa được sử dụng trước đấy. công dụng của nó là mua 1 cái tên dễ viết, dễ nhớ và không đụng hàng (unique)
+
+ví dụ: bạn nhớ trang google.com chứ không nhớ 192.168.1.69
+thì ở đây: google.com chính là tên miền
+
+
+B2: mua 1 máy tính server(hosting) (chạy trên cloud).
+
+Máy tính trên cloud sẽ có 1 địa chỉ IP, ví dụ 192.168.1.96. Chúng ta cần địa chỉ này để có thể truy cập vào nó.Sau khi truy cập vào server này, các bạn cần tải code (local) lên trên này lưu trữ,và cài đặt các phần mềm cần thiết,ví dụ như database chẳng hạn.
+
+=> đây gọi là bước deploy, giúp chuyển code từ máy tính local lên 1 máy tính ở cloud.
+
+
+B3: Cấu hình tên miền trỏ vào địa chỉ IP server. Tức là: khi người dùng gõ ten-mien-cua-ban.com 
+
+=> máy tính sẽ tự động trỏ tới 192.168.1.96 (địa chỉ server)
+
+Do máy tính server hoạt động 24/7 => bạn có thể truy cập và sử dụng website ở bất cứ đâu, bất cứ khi nào bạn muốn
+
+
+- ưu điểm: website chạy thực tế, 'sống' 24/7, ai cũng có thể truy cập và sử dụng
+- nhược điểm: tốn tiền :v	
+
+
+#4. Dữ Liệu Để Hiển Thị Website
+
+	1. Dữ liệu tĩnh (static)
+
+Dữ liệu static là các dữ liệu cố định, và không thay đổi theo thời gian. Ví dụ: tên/ảnh
+thương hiệu website
+
+Do tính chất 'cố định', chúng ta thường 'hard-code' fix cứng trong mã nguồn (source
+code), viết 1 lần và dùng mãi mãi.
+
+Ưu điểm: dữ liệu được lưu trong source code, all-in-one
+Nhược điểm: khó thay đổi khi có yêu cầu sửa đổi
+
+
+	2. Dữ liệu động (dynamic)
+
+Dữ liệu dynamic là dữ liệu thay đổi theo thời gian (ngược hoàn toàn với static).
+
+ví dụ: hôm nay bạn lướt facebook, post hiện lên nó khác, ngày mai nó khác và thay đổi liên tục.
+
+Ưu điểm: thay đổi liên tục theo thời gian
+Nhược điểm: cần code logic để xử lý :D
+
+
+	
+	3.Lưu trữ dữ liệu
+
+Có 2 dạng lưu trữ dữ liệu phổ biến: lưu trữ data trong file và lưu trữ dữ liệu trong 'phần mềm'
+
+- Lưu trữ trong file: ví dụ, bạn lưu trữ thông tin user trong file .txt, file .csv
+
+ưu điểm: thuận tiện cho người không coding và quen thuộc với các phần mềm cơ bản (word, excel...)
+nhược điểm: lưu trữ data không hiệu quả, nếu như data gồm nhiều loại dữ liệu, và khối lượng kích thước lớn
+
+
+- Lưu trữ trong 'phần mềm': các phần mềm hỗ trợ việc lưu trữ data, gọi là các hệ quản trị cơ sở dữ liệu hiểu đơn giản là database.
+
+
+ưu điểm: lưu trữ data hiệu quả, đảm bảo lưu trữ được nhiều loại dữ liệu và khối lượng dữ liệu lớn
+nhược điểm: cần 'học' cú pháp để có thể sử dụng các phần mềm này
+	
+
+
+
+#5. Website Khi Có Lưu Trữ Data
+
+Data được lưu trữ ở đâu ?
+
+1. Ví dụ: người dùng thực hiện hành động đăng nhập
+B1: nhập username/password
+B2: nhấn nút đăng nhập
+B3: nhận kết quả
+
+Thì bí mật đứng sau là gì:
+
+Tại bước 2 chuyển qua bước 3, website sẽ cần phải làm 1 cái gì đấy, cụ thể là:
+
+- website sẽ cần phải kiểm tra thông tin người dùng cung cấp, và thông tin 'nó đã lưu trữ từ trước đấy - tập users'
+
+- nếu thông tin cung cấp là chính xác => thành công Vậy website lưu trữ data ở đâu ? => database
+
+Chúng ta sẽ dùng database để lưu trữ dữ liệu.
+
+
+#6. Database
+
+  + Database là cách chúng ta 'tổ chức và lưu trữ' dữ liệu website một cách hiệu quả.
+Với database, chúng ta lưu trữ dữ liệu với 2 cách:
+
+- Sử dụng dữ liệu quan hệ (Relational Database - SQL) : MySQL, Postgres, Oracle, SQL
+Server...
+
+- Sử dụng dữ liệu phi quan hệ (Non-Relational Database / NoSQL): MongoDB, Redis...
+
+
+
+Chapter 2: Web server với Node.JS
+
+
+ #1. What is Node.JS
+
+	+ Để tạo ra 1 web server chúng ta cần sử dụng các ngôn ngữ backend, có thể kể tới như Java, php, python, js,....
+
+	+ Chúng ta không thể sử dụng các công cụ ở FE để viết server, tuy nhiên JS là một ngoại lệ 
+
+	+ JS có thể chạy được ở FE và BE
+	
+ >> Node.JS là công cụ (môi trường) giúp chúng ta có thể thực thi code JS ngay trên server 
+
+ >> Node.JS là 1 platform(môi trường) chứ không phải là 1 thư viện hay framework 
+
+
+#2. What is NPM - Node Package Manager
+
+ + npm là công cụ giúp chúng ta quản lý các thư viện được xây dựng sẵn cho node.js, bao gồm miễn phí và trả phí 
+
+ + nó chính là nơi lưu trữ các thư viện mà lập trình viên chỉ cần kéo về và dùng 
+
+
+#3. Hello world với Node.js (Basic)
+
+  1. Hello world với browser
+
+	- tạo file HTML
+	- đính kèm file JS vào HTML
+
+  2. Hello world với nodejs
+
+	- Để chạy file js, sử dụng câu lệnh:
+
+	node path_to_file.js 
+
+  3. lý do gọi nodejs là backend
+
+	Với cách làm thứ 2, chúng ta đang chạy file ở server và trả ra kết quả, không phụ thuộc vào browser như cách 1 
+
+	>> Chúng ta gọi nodejs là backend 
+
+
+#4. Các thành phần của URL
+
+ + URL(Uniform Resource Locator): hiểu đơn giản là đường link truy cập tới 1 website
+ VD: https://www.google.com
+
+ + Cấu trúc của URL: scheme://host:port/path?query
+
+	Trong đó: 
+
+		+ scheme: định nghĩa protocol để truy cập nguồn tài nguyên trên internet, bao gồm HTTP, và HTTPS 
+
+		+ SSL (Secure Sockets Layer): giúp code an toàn hơn 
+
+		+ host: nới chứa, lưu trữ server: có thể gọi là domain name 
+
+			
+
+	> host name có thể chứa port number
+
+	+ Tại 1 server có thể sử dụng nhiều process tại 1 thời điểm, để định danh từng process, PORT được sử dụng 
+
+	+ PORT number 16bit
+
+	+ Khi client truy cập vào 1 hostname, sv sẽ tự động sử dụng port để khởi tạo 
+
+	VD:
+
+		FTP: 21
+		HTTP: 80
+		HTTPS: 443
+
+	=> Khi truy cập vào https://abc.com thực chất là đang truy cập vào https://abc.com:443
+
+	=> Với dev, dùng port có thể để chạy nhiều project 1 lúc tại local
+
+	
+		
+		+ path: nguồn tài nguyên ở host mà client muốn truy cập 
+
+		VD: fb.com/watch 
+
+
+		+ a query string: nếu được sử dụng, nó sẽ cung cấp các thông tin mà client truyền lên server 
+
+		VD: fb.com/user?  > id=123 <
+
+
+
+#5. Hello world với Node.js (Advance)
+	
+	>> Tham khảo: https://nodejs.org/en
+
+VD: đây chỉ là cách làm chạy, sau này sẽ dùng cách khác 
+
+import { createServer } from "node:http";
+
+const hostname = "127.0.0.1";
+const port = 4000; // 0 => ~ 65000
+
+// Tạo 1 HTTP server và listen trên port 3000 for request
+const server = createServer((req, res) => {
+  res.statusCode = 200;
+  res.setHeader("Content-Type", "text/plain");
+  res.end("Hello World!");
+});
+
+// Website sẽ chạy ở đâu, sau khi server chạy, hàm callback sẽ được chạy
+
+server.listen(port, hostname, () => {
+  console.log(`server running at: https://${hostname}:${port}/`);
+});
+
+// Tự động chạy trên localhost
+server.listen(port, () => {
+  console.log(`server running at: https://${hostname}:${port}/`);
+});
+
+// run with `node server.mjs (module)`
+
+
+	> Fix lỗi trùng port 
+
+	+ npx-kill-port PORT
+
+	+ Khởi động lại máy tính 
+
+	+ chạy project tại port khác 
+
+
+
+#6. Cài đặt thư viện Node.JS với NPM 
+
+	+ Với các thư viện có sẵn của Node.js chúng ta có thể chạy được web server, 
+	+ Tuy nhiên với việc sử dụng npm. chúng ta có thể cài đặt các thư viện cần thiết để xây dựng web server
+
+	1. npm init
+
+	+ Tạo ra file package.json và các thông tin cần thiết
+
+	2. Cài đặt thư viện
+
+		> Chỉ có thể dùng khi đã có package.json 
+
+	3. Cài đặt express
+
+	npm i express
+
+	
+
+#7. Cài đặt thư viện ExpressJS (Hello world with ExpressJS)
+
+	1. ExpressJS là gì 
+
+	+ Express.js là một framework web nhẹ và linh hoạt dành cho Node.js, giúp bạn dễ dàng xây dựng các ứng dụng web server và API. 
+
+
+	🔧 Tóm tắt:
+
+	Ngôn ngữ: JavaScript (chạy trên Node.js)
+
+	Mục đích: Xây dựng web server hoặc RESTful API
+
+	Đặc điểm nổi bật: Nhẹ, đơn giản, dễ mở rộng, phổ biến
+	
+
+	VD:
+
+const express = require('express'); // index.js 
+import express from "express"       // index.mjs 
+
+const app = express();
+
+// Định nghĩa route
+app.get('/', (req, res) => {
+  res.send('Xin chào từ Express!');
+});
+
+// Lắng nghe cổng 3000
+app.listen(3000, () => {
+  console.log('Server chạy tại http://localhost:3000');
+});
+
+
+	🧰 Express dùng để làm gì?
+
+Tạo RESTful API
+
+Xây dựng web server
+
+Xử lý các route, middleware
+
+Giao tiếp với cơ sở dữ liệu (kết hợp với thư viện khác)
+
+Là nền tảng của các framework lớn hơn như NestJS	
+
+
+(req, res) có rất nhiều các thuộc tính . khác. chi tiết tham khảo:
+
+https://expressjs.com/en/5x/api.html#res
+https://expressjs.com/en/5x/api.html#req
+
+
+#8. Mô hình hoạt động của ExpressJS
+
+	1. Cách express hoạt động
+
+const express = require("express");
+
+const app = express();  // tạo app express
+const port = 3000; // port
+
+
+// Khai báo routes
+app.get("/", (req, res) => { // 2 obj trong môi trường node.js
+  res.send("Hello World!");
+});
+
+// run lên server trên port đã khởi tạo trước đấy
+app.listen(port, () => {
+  console.log(`Example app listening on port ${port}`);
+});
+
+
+	2. trải nghiệm của người dùng (client)
+
+- Quá trình website vận hành
+
+	+ Trước khi client vào web, server đã được chạy lên, ss để hoạt động.
+
+- Khi server được chạy lên thì: 
+
+	+ Sẽ chạy trên 1 port, ví dụ là :3000
+
+- server biết nó có thể xử lý các route nào bằng các nạp thông tin đầu vào qua 
+
+	app.get("/", ()...
+
+	=> Đây chính là đoạn code nói cho server biết, khi người dùng vào route "/" thì nó cẩn gửi gì 
+
+- Khi client vào web và ấn enter, tạo 1 request lên server, muốn sv hiển thị nội dung tương ứng với route đó
+
+- Server nhận được request, tìm trong đống routes và trả về kết quả với route tương ứng 
+
+
+	=>  sau này, ứng với 1 tính năng (screen - màn hình) của 1 web, sẽ xuất điểm với route để biết server làm gì.
+
+
+#9. More routes with ExpressJS
+
+	1. Khai báo thêm routes
+
+	+ Để khai báo thêm routes đơn giản chỉ là thêm code vào 
+
+app.get("/", (req, res) => {
+  // 2 obj trong môi trường node.js
+  res.send("Hello World!");
+});
+
+app.get("/abc", (req, res) => {
+  // 2 obj trong môi trường node.js
+  res.send("Hello !");
+});
+
+
+	2. Cấu trúc: 
+
+	app.METHOD(PATH, HANDLER)
+
+		> app: ở đây là ứng dụng express
+		> method: là http request method
+		> path: đường link, route trên server 
+		> handler: function để xử lý route được match 
+
+	
+	3. Trả ra dynamic content 
+
+	res.send("<h1>sfasd</h1>")
+
+	Ưu điểm: nội dung động 
+	Nhược điểm: Không bảo trì được code.
+
+
+	=> Để giải quyết vấn đề ta cần view engine (template engine)
+
+
+
+	4. nhớ có return sau câu cuối của res.render hay res.json,... để ngăn code k thực thi tiếp xuống dưới 
+
+#10. Template Engine 
+
+	(Link config: https://expressjs.com/en/guide/using-template-engines.html#using-template-engines-with-express)
+
+	1. Template engine 
+
+	+ Template engine (bộ máy dựng mẫu) là một công cụ giúp bạn kết hợp dữ liệu từ backend với một file HTML template để tạo ra nội dung HTML cuối cùng được gửi cho trình duyệt người dùng.
+
+	+ Trong Express.js, bạn có thể dùng các template engine như:
+
+	EJS (Embedded JavaScript)
+
+	Pug (trước đây là Jade)
+	...
+
+❓ Tại sao phải dùng template engine?
+
+Khi xây dựng ứng dụng backend (như Express.js), bạn không muốn viết các đoạn HTML dài dòng bằng res.send() mỗi lần trả về một trang web.
+
+Thay vào đó:
+
+Bạn viết một file HTML "mẫu" có chỗ để chèn dữ liệu động.
+
+Template engine sẽ chèn dữ liệu động vào các phần tử đó rồi render ra HTML hoàn chỉnh.
+
+
+	2. EJS
+
+ + EJS là viết tắt của Embedded JavaScript.
+
+ + Là một template engine phổ biến cho Express.js.
+
+ + Cú pháp của EJS rất giống HTML thuần, và bạn có thể nhúng JavaScript vào HTML một cách dễ dàng.
+
+	VD: <h1>Xin chào <%= name %></h1>
+	
+	    res.render('greeting', { name: 'Long' });
+
+	=> <h1>Xin chào Long</h1>
+
+
+✅ Tại sao dùng EJS?
+
+Dễ học, cú pháp gần giống HTML.
+
+Tích hợp tốt với Express.
+
+Cho phép nhúng logic đơn giản như if, for, include vào template.
+
+Phù hợp cho các dự án nhỏ hoặc vừa cần server-side rendering.
+
+
+	3. SSR và CSR
+
++ Khi sử dụng template engine, tức là ta đang render trang web theo kiểu SSR
+
+	>>> SSR <<<
+
++ Kết hợp dữ liệu với HTML ở server, rồi gửi nguyên file HTML cho client
+
+	
+	✅ Ưu điểm:
+
+Đơn giản cho những trang web nhỏ, ít tương tác (ví dụ: blog, admin page…).
+
+SEO tốt hơn vì HTML được tạo sẵn từ server.
+
+Không cần nhiều JS phía client.
+
+	
+	>>> CSR <<<
+
++ Viết HTML ở client, gọi API lấy dữ liệu từ backend rồi hiển thị ra
+
+	✅ Ưu điểm:
+
+Trải nghiệm tương tác nhanh (SPA).
+
+Backend đơn giản, chỉ trả JSON.
+
+Phân chia rõ ràng giữa frontend (hiển thị) và backend (API).
+
+	
+	4. 📌 Cách chọn đúng hướng đi:
+
+Mục tiêu của bạn				Sử dụng
+Web app hiện đại (SPA, dashboard, interactive)	✅ API backend (Express, NestJS...) + CSR (React)
+Web đơn giản, cần HTML động từ server		✅ Template engine (EJS, Pug)
+Kết hợp cả SSR + CSR + SEO			✅ Next.js (hoặc Nuxt nếu dùng Vue)
+	
+
+
+Chapter 3: Project Structure
+
+#1. ENV (Environment Variable)
+
+	1. Tại sao cần env 
+
+	- Tham số môi trường, là các tham số thiết lập chung. Thay vì hardcode, chúng ta sẽ cấu hình tập trung lại
+
+	VD:
+
+# app hostname and port
+PORT=3000
+HOST_NAME=localhost
+
+
+	2. File .env
+
+	- Là file dùng định nghĩa các tham số môi trường
+
+	- Cách tham số được khai báo theo định dạng: KEY=VALUE
+	
+	* Lưu ý: 
+	+ Giá trị lưu trong file sẽ bị convert sang string 
+	+ để thêm comment, sử dụng dấu #
+	+ không nên đẩy file .env nên repo để tránh bị lộ thông tin. nếu muốn hãy tạo thêm file .env.example và paste các biến vào nhưng hãy nhớ xóa value đi 
+	
+	
+	3. Sử dụng với nodejs
+
+	(Link: https://www.npmjs.com/package/dotenv)
+	
+	+ Trong môi trường nodejs, khi ta muốn lấy giá trị từ .env thì phải dùng "process.env.KEY", tuy nhiên ta cần cài thêm package như trên thì mới đùng được 
+
+	+ Mỗi lần update .env thì cần chạy lại app
+
+
+#2. DevTool - Nodemon
+	
+	+ nodemon là 1 công cụ giúp ứng dụng node tự động restart lại mỗi khi có file thay đổi 
+	+ Mặc định: nodemon quan sát các file sau: js, mjs, coffee, litcoffee
+
+
+	1. Sử dụng với nodejs 
+
+	(Link: https://www.npmjs.com/package/nodemon)
+
+	ở package.json thay node => nodemon
+
+	
+	* Mở rộng: sự khác biệt giữa dependencies và devDependencies
+
+	+ dep: các package cần thiết để chạy production 
+
+	+ devDep: các package chỉ cần dùng khi dev ứng dụng và k cần trên production 
+
+
+
+#3. Static files 
+
+	(Link config: https://expressjs.com/en/starter/static-files.html)
+
+	+ To serve static files such as images, CSS files, and JavaScript files, use the express.static built-in middleware function in Express.
+		
+
+	VD:
+
+
+// config static file
+const path = require("path");
+app.use(express.static(path.join(__dirname, "public")));
+
+
+
+#4. Mô hình MVC với NodeJS
+
+	Mô hình MVC - MVC design pattern 
+
+	+ Design pattern là cách giải pháp thiết kế để xử lý bài toán 1 cách hiệu quả nhất 
+
+	+ Với mô hình xây dựng website, mô hình MVC là cơ bản nhất, cũng được sử dụng rộng rãi.
+	
+	( MVC: Model - View - Controller )
+
+	+ MVC giúp viết code theo tổ chức, dễ dàng maintain và scale 
+
+	
+
+ 1. View
+
+	+ View là kết quả nhìn thấy của client
+	
+	+ Với mô hình client-server, client gửi request lên server, server gửi response lại cho client, view chính là kết quả mà client nhận được 
+
+
+	
+ 2. Controller
+	
+	+ Là nơi điều hướng dữ liệu
+
+ 	+ Là cầu nối giữa Model và View.
+
+	+ Nhận yêu cầu từ người dùng (qua URL, form,...), xử lý logic và gọi Model/View phù hợp.
+
+	+ Controller đóng vai trò như 1 leader giúp điều phối thôn tin xử lý model và trả về view cho phù hợp 
+
+Ví dụ: Khi người dùng nhấn nút "Thêm sản phẩm", Controller nhận sự kiện, gọi Model để lưu vào DB và chuyển hướng về View.
+	
+
+
+3. Model (M - Mô hình dữ liệu)
+
+	+ Chịu trách nhiệm xử lý dữ liệu và logic nghiệp vụ.
+
+	+ Giao tiếp với cơ sở dữ liệu (database).
+
+	+ Không liên quan đến giao diện người dùng.
+
+Ví dụ: Trong ứng dụng bán hàng, Product là một model lưu thông tin như tên, giá, số lượng,…
+
+
+
+🧠 Ví dụ tổng quan:
+
+Giả sử bạn có một trang web hiển thị danh sách sinh viên:
+
+Model: Kết nối cơ sở dữ liệu và lấy danh sách sinh viên.
+
+View: Giao diện HTML/CSS hiển thị danh sách sinh viên.
+
+Controller: Khi người dùng truy cập /sinhvien, controller gọi Model để lấy dữ liệu và trả về View.
+
+
+✅ Ưu điểm của mô hình MVC:
+
+Tách biệt rõ ràng giữa phần dữ liệu, giao diện và logic.
+
+Dễ mở rộng, bảo trì.
+
+Có thể làm việc nhóm hiệu quả: một người làm Model, người khác làm View, v.v.
+	
+
+
+
+#5. Tổ chức các thư mục project theo mô hình MVC
+
+	+ Thông thường 1 project sẽ có các thư mục như sau 
+
+	/src >
+		
+		/ configs
+
+		/ controllers
+		/ middlewares
+		/ migrations
+		/ models
+		/ public
+		/ routes
+		/ seeder
+		/ services
+		/ views
+		  server.js
+	
+
+#6. Áp dụng mô hình MVC và giải thích các thư mục trên 
+
+	> Chi tiết nội dung các file có trong project "backend-from-zero-nodejs"
+
+	1. /configs
+
+	+ chứa các config như template view, static files,..
+
+	
+	2. /routes  > web.js, api.js
+
+	+ chứa các routes phục vụ cho việc ssr và restful api 
+
+		1. web.js 
+
+		>> tham khảo: https://expressjs.com/en/guide/routing.html		
+
+		+ chia tách routes
+
+// routes.js
+
+import express from "express";
+
+const router = express.Router();
+
+// Khai báo routes
+router.get("/", (req, res) => {
+  // 2 obj trong môi trường node.js
+  res.send("Hello World!");
+});
+
+router.get("/abc", (req, res) => {
+  res.render("sample.ejs");
+});
+
+export default router;
+
+// server.js
+
+app.use("/", webRoutes); // => tham số "/" sẽ cho biết toàn bộ các routes sẽ đứng sau nó. VD: /test/abc
+	
+
+	
+	3. /controllers
+
+	  + handle việc phải làm khi có routes thích hợp 
+
+
+VD: 
+router.get("/", getHomePage);
+	
+=> getHomePage chính là logic xử lý khi có routes đó, ta sẽ viết bên trong controller 
+
+VD: 
+
+const getHomePage = (req, res) => {
+  // process data
+  // call model
+  res.send("Hello World!");
+};
+
+const getABC = (req, res) => {
+  res.render("sample.ejs");
+};
+
+export { getHomePage, getABC };
+
+	
+	4. /models
+
+	+ controller chỉ là tổng quan và render,... Còn logic bên trong controller sẽ được viết vào model 
+
+
+
+Chapter 4: Setup Docker & Database SQL
+
+
+#1. Docker là gì ?
+
+	+ Docker là một nền tảng giúp đóng gói (package), phân phối (ship) và chạy (run) các ứng dụng trong các container — một môi trường nhẹ, độc lập và nhất quán với hệ điều hành.
+
+
+Docker là một công cụ mã nguồn mở cho phép:
+
+	+ Tạo ra các container: giống như một máy ảo nhẹ.
+
+	+ Đóng gói ứng dụng kèm toàn bộ môi trường chạy, như: hệ điều hành, thư viện, file cấu hình…
+
+	+ Triển khai nhất quán ứng dụng ở bất kỳ đâu (local, server, cloud...).
+
+
+🔧 Tác dụng của Docker đối với dự án Backend
+
+	1. Đóng gói backend thành container
+Docker giúp đóng gói code backend (Node.js, Python, Java...) vào một container.
+
+Bạn không cần quan tâm "máy chủ có cài đúng phiên bản Node, Python... không" — vì Docker đã kèm sẵn trong container.
+
+
+	2. Triển khai dễ dàng, nhất quán
+Dù bạn chạy app trên máy local, staging hay production, container đều giống nhau.
+
+Tránh lỗi kiểu “chạy được ở máy em, nhưng không chạy trên server”.
+
+
+	3. Dễ quản lý các dịch vụ phụ trợ
+Backend thường cần DB như PostgreSQL, Redis... Docker giúp bạn khởi động chúng dễ dàng bằng docker-compose.
+
+Lưu trữ database
+
+	
+	4. Tăng tốc độ phát triển
+Mỗi lập trình viên clone code về chỉ cần docker-compose up là có đầy đủ backend, database để dev.
+
+Không cần cài đặt môi trường rườm rà.
+
+	5. Dễ CI/CD
+Docker image có thể đẩy lên Docker Hub và deploy trực tiếp lên server bằng các công cụ CI/CD (GitHub Actions, GitLab CI...).
+
+
+
+#2. Setup dự án MySQL với Docker và DBeaver
+
+	+ Relational Database
+
+	> Relational Database : Cơ sở dữ liệu quan hệ (SQL), có thể kể tới: MySQL, SQL 	Server, Postgres, Oracle...
+
+
+1. DBeaver
+Download: https://dbeaver.io/download/
+DBeaver (bản Community Free) giúp kết nối tới các hệ cơ sở dữ liệu, all-in-one
+
+
+2. Kết nối database
+
+B1: Tạo database MySQL với docker
+→ Đảm bảo rằng máy tính đã chạy docker (với Windows, MacOS thì chạy sẵn Docker Desktop)
+
+B2: Tạo database với Docker Compose
+→ Đảm bảo rằng, vì dữ cũ ở máy tính, còn dữ tài nguyên (dung lượng) để lưu trữ.
+
+Download file cài đặt:
+[Google Drive link]
+(https://drive.google.com/file/d/1DfSjTZMBRYXbKCde5qRo_HYJ3YJWNtGa/view?usp=share_link)
+
+
+B3: Chạy câu lệnh cmd bên trong thư mục chứa file mysql.yml
+
+	> docker compose -f mysql.yml -p nodejs-sql up -d
+
+-f: file name
+
+-p: project name
+
+-d: detach, run as background
+
+
+B4: tạo connection trong DBeaver
+
+Port: 3307 > tùy file mysql
+Username/password: root/123456 > tùy 
+
+	Lưu ý: 
+
+DBeaver không phải là database, nó là phần mềm giúp truy cập và sử dụng database.
+Database được tạo bên trong Docker :v
+
+Sau này, mỗi lần cần sử dụng database MySQL, đảm bảo rằng đã chạy docker trước. Vì không có docker, thì cũng không có database
+
+Không cần "update docker" để hạn chế mất dữ liệu
+
+
+
+#3. Sử dụng MySQL với Node.js
+
+	1. Cài đặt mysql2
+
+	https://www.npmjs.com/package/mysql2
+
+
+	2. tạo data cho database: 
+	
+	+ vào dbeaver và tạo dữ liệu cho bảng 
+
+VD:
+
+CREATE TABLE Users (
+id int not null auto_increment primary key,
+email varchar(255),
+name varchar(255),
+city varchar(255)
+);
+
+insert into Users 
+values (1, "doanthien@gmail.com", "DoanThien", "HaiPhong");
+
+insert into Users 
+values (2, "mymy@gmail.com", "Domy", "HaiPhong");
+
+
+select * from Users u;
+
+
+
+	3. kết nối tới database 
+	
+	- Lưu ý: cần chay docker để có database 
+
+	( https://sidorares.github.io/node-mysql2/docs )
+
+VD:
+
+// Get the client
+import mysql from 'mysql2/promise';
+
+// Create the connection to database
+const connection = await mysql.createConnection({
+  host: 'localhost',
+  user: 'root',
+  database: 'test',
+});
+
+// A simple SELECT query
+try {
+  const [results, fields] = await connection.query(
+    'SELECT * FROM `table` WHERE `name` = "Page" AND `age` > 45'
+  );
+
+  console.log(results); // results contains rows returned by server
+  console.log(fields); // fields contains extra meta data about results, if available
+} catch (err) {
+  console.log(err);
+}
+
+
+
+
+#4. Tái sử dụng Connection 
+
+	1. chia tách file connections
+
+	+ Ta nên chia file config connections sang bên file mới trong config/db.mjs 
+
+	+ không nên hardcode các thông số, lưu vào env để sau này thay cho tiện 
+
+VD:
+	db.mjs 
+
+
+import { config } from "dotenv";
+config();
+
+import mysql from "mysql2/promise";
+
+const connection = await mysql.createConnection({
+  host: process.env.DB_HOST,
+  port: process.env.DB_PORT,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
+});
+
+export default connection;
+
+
+
+#5. Connection Cost, tạo mới connection 
+
+
+	Một số vấn đề gặp phải với cách làm hiện tại 
+
+
+1. Tạo mới connection mỗi lần truy vấn gây tốn kém
+
+	+ Mỗi lần truy vấn sẽ tạo 1 connection mới → tốn thời gian và tài nguyên.
+
+	+ Đặc biệt nếu backend ở Việt Nam và database ở USA → độ trễ tăng cao.
+
+
+2. Không đóng connection sau khi dùng
+
+	+ Nếu không đóng → dẫn đến tồn đọng connection → rò rỉ tài nguyên.
+
+	+ Ví dụ: 1000 user truy cập cùng lúc → 1000 connection không được đóng → nguy hiểm.
+
+	+ Cần đóng connection sau khi dùng bằng các hàm như close, destroy.
+
+
+3. Database có giới hạn tài nguyên (rate limit)
+
+	+ Database là phần mềm, nên tốn tài nguyên (CPU/RAM).
+
+	+ Nhiều connection → tải nặng hơn, có thể khiến DB bị treo hoặc tự restart.
+
+	+ Phải tối ưu cách tạo và quản lý connection để không vượt giới hạn chịu tải.
+	
+	
+	
+#6. Connection Pool Pattern, tối ưu connection fix các vấn đề trên 
+
+	(Tham khảo: https://sidorares.github.io/node-mysql2/docs )
+
+	+ Để giải quyết các vấn đề trên ta có 1 khái niệm: Connection Pools
+
+	+ Connection pools help reduce the time spent connecting to the MySQL server by reusing a previous connection, leaving them open instead of closing when you are done with them.
+
+
+	VD:
+
+Thay vì sử dụng await mysql.createConnection() thì: 
+
+import mysql from 'mysql2/promise';
+
+// Create the connection pool. The pool-specific settings are the defaults
+const pool = mysql.createPool({
+  host: 'localhost',
+  user: 'root',
+  database: 'test',
+  waitForConnections: true,
+  connectionLimit: 10,
+  maxIdle: 10, // max idle connections, the default value is the same as `connectionLimit`
+  idleTimeout: 60000, // idle connections timeout, in milliseconds, the default value 60000
+  queueLimit: 0,
+  enableKeepAlive: true,
+  keepAliveInitialDelay: 0,
+});
+
+
+
+Chapter 5: CRUD với Nodejs 
+
+
+#1. Express và req.body
+
+	(Tham khảo: https://stackoverflow.com/questions/9304888/how-to-get-data-passed-from-a-form-in-express-node-js )
+
+	+ để lấy được data gửi từ client lên server ta cần thư viện để hỗ trợ làm điều đó.
+	
+	>>
+
+app.use(express.json()); // Used to parse JSON bodies
+app.use(express.urlencoded()); //Parse URL-encoded bodies
+
+
+	* Lưu ý khi sử dụng form HTML
+
+	+ Để server có thể lấy được data gửi từ client lên server thông qua req.body, chúng ta phải dùng thuộc tính attrbute là name, không phải id cho phần tử HTML muốn lấy giá trị 
+
+
+
+
+#2. Truyền data động từ client lên server 
+
+	VD với chức năng create user: 
+
+// Create user
+const postCreateUser = async (req, res) => {
+  let { name, email, city } = req.body;
+  // Using placeholders
+  try {
+    await connection.query(
+      `insert into Users 
+      (email, name, city) values (?, ?, ?)`,
+      [email, name, city]
+    );
+    res.send("Create user success!");
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+
+- Khi ta sử dụng thư viện mysql2 để thực hiện insert new user vào database thì ta cần phải truyền theo kiểu động.
+
+
+`insert into Users 
+      (email, name, city) values (?, ?, ?)`,
+      [email, name, city]
+
+
+>> ta không truyền trực tiếp giá trị vào câu lệnh mà thông qua ? và mảng ở dưới. mảng ở dưới sẽ lần lượt thay thế vào các ? trên câu lệnh và gửi đi. 
+
+
+#3. Truyền data từ sv to ejs file 
+
+	Cú pháp: app.render(view, [locals], callback)
+
+	views: render ra view
+	local: truyền data nhận được trong func to ejs file 
+
+VD: 
+
+const getHomePage = async (req, res) => {
+  try {
+    let results = await getAllUser();
+    res.render("home.ejs", { listUser: results });
+  } catch (error) {
+    console.log(error)
+  }
+};
+
+
+
+#4. Sử dụng ejs để in data ra HTML 
+
+	(Tham khảo: https://ejs.co/ )
+
+VD về 1 vòng lặp sử dụng EJS
+
+  <% listUser.forEach(function(user) { %>
+                            <tr>
+                                <th scope="row">
+                                    <%= user.id %>
+                                </th>
+                                <td>
+                                    <%= user.name %>
+                                </td>
+                                <td>
+                                    <%= user.email %>
+                                </td>
+                                <td>
+                                    <%= user.city %>
+                                </td>
+                                <td>
+                                    <button>
+                                        <a style="text-decoration: none; color: black;" rel="stylesheet"
+                                            href="/edit-user">Edit</a>
+                                    </button>
+                                    <button>Delete</button>
+                                </td>
+                            </tr>
+                            <% }); %>
+
+
+	Giải thích: 
+
+<% ... %> là cú pháp EJS để chạy JavaScript nhưng không in ra HTML.
+
+<%= ... %> là cú pháp EJS để in ra kết quả của biểu thức JavaScript vào HTML.
+
+
+
+#5. Route params
+
+	(Tham khảo thêm: https://expressjs.com/en/guide/routing.html#routing )
+
+Để lấy được param từ URL ta cần sử dụng req.params
+
+VD:
+
+const getUpdatePage = (req, res) => {
+  const userID = req.params.id;
+
+  res.render("edit-user.ejs");
+};
+
+
+
+Chapter 6: RESTful API 
+
+
+	1. REST là gì ? 
+
++ REST (Representational State Transfer) là một phong cách kiến trúc do Roy Fielding đề xuất trong luận án tiến sĩ năm 2000. RESTful API là một ứng dụng của REST trong việc thiết kế API.
+
++ RESTful API là một kiểu kiến trúc phần mềm dùng để xây dựng các dịch vụ web. RESTful API sử dụng HTTP để giao tiếp giữa client (frontend, mobile app,...) và server (backend), thường trao đổi dữ liệu qua JSON.
+
+
+	2. Cấu trúc RESTful API 
+
+
+HTTP	 Method	Hành động (CRUD)	Mô tả
+
+GET	Read	Lấy dữ liệu tài nguyên
+
+POST	Create	Tạo tài nguyên mới
+
+PUT	Update	Cập nhật toàn bộ tài nguyên
+
+PATCH	Update	Cập nhật một phần tài nguyên
+
+DELETE	Delete	Xoá tài nguyên
+
+
+	VD: 
+	 Giả sử bạn có một API quản lý người dùng:
+
+Hành động		URL	HTTP Method
+
+Lấy danh sách user	/users	GET
+
+Lấy 1 user		/users/:id	GET
+
+Tạo user mới		/users	POST
+
+Cập nhật user (toàn bộ)	/users/:id	PUT
+
+Cập nhật user (1 phần)	/users/:id	PATCH
+
+Xoá user	/users/:id	DELETE
+
+
+
+	4. Quy tắc thiết kế RESTful API
+
+
+	 > Sử dụng danh từ, không dùng động từ cho URL
+
+✅ /users thay vì ❌ /getUsers hoặc /createUser
+
+
+	> Sử dụng đúng HTTP method
+
+GET để đọc, POST để tạo, PUT/PATCH để sửa, DELETE để xoá.
+
+	
+	> Không chứa trạng thái trong URL
+
+Tránh /users/active=true → nên dùng /users?status=active
+
+
+	> Trả về mã HTTP chính xác
+
+	(https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status)	
+
+200 OK, 201 Created, 204 No Content, 400 Bad Request, 404 Not Found, 500 Internal Server Error
+
+
+VD: 
+
+const getAllUser = async (req, res) => {
+  try {
+    const [results] = await connection.execute("SELECT * FROM Users ");
+    return res.status(200).json(results);
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+
+
+	> Sử dụng JSON để trao đổi dữ liệu
+
+Response hoặc Request body nên ở dạng JSON:
+{
+  "name": "Alice",
+  "email": "alice@example.com"
+}
+
+
+	> Dùng mã hoá và phân trang nếu cần thiết
+
+Ví dụ: /users?page=2&limit=10
+
+
+	5. Ưu điểm của RESTful API
+
+Đơn giản, dễ hiểu, dễ bảo trì.
+
+Không trạng thái (stateless): mỗi request độc lập.
+
+Linh hoạt, có thể dùng với bất kỳ client nào (React, Angular, mobile, v.v.)
+
+Dễ mở rộng.
+
+
+	6. API viết ở đâu
+
+	+ API bắt buộc viết ở phía server bằng các ngôn ngữ cụ thể 
+
+	
+	
+
+Chapter 7: Upload file 
+
+	1. Upload single file
+
+
+	(https://stackabuse.com/handling-file-uploads-in-node-js-with-expres-and-multer/)
+
+	- tổng quan luồng upload file lên bên thứ 3
+
+	B1: Client chọn file 
+
+	B2: tạo formData để chuẩn bị gửi file 
+
+	B3: gửi file về backend để xử lý hoặc gửi trực tiếp lên bên thứ 3 lưu trữ 
+
+	B4: Dịch vụ bên thứ 3 trả về URL cũng như thông tin file 
+
+	B5: lưu URL vào database để tiện sử dụng 
+
+
+	+ Sử dụng multer để upload file lưu vào local 
+
+	B1. Cài đặt multer + app-root-path
+
+	B2. tạo giao diện upload file 
+
+
+ <form method="post" action="/upload-avt" enctype="multipart/form-data">
+                <label for="avt-file">Avatar: </label>
+                <input type="file" name="avt-file" id="avt-file">
+                <div>
+                    <input type="submit" value="Save">
+                </div>
+            </form>
+
+
+	B3: tạo routes và cấu hình 
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, appRoot + "/src/public/images/");
+  },
+
+  // By default, multer removes file extensions so let's add them back
+  filename: function (req, file, cb) {
+    cb(
+      null,
+      file.fieldname + "-" + Date.now() + path.extname(file.originalname)
+    );
+  },
+});
+
+const imageFilter = function (req, file, cb) {
+  // Accept images only
+  if (!file.originalname.match(/\.(jpg|JPG|jpeg|JPEG|png|PNG|gif|GIF)$/)) {
+    req.fileValidationError = "Only image files are allowed!";
+    return cb(new Error("Only image files are allowed!"), false);
+  }
+  cb(null, true);
+};
+
+let upload = multer({ storage: storage, fileFilter: imageFilter });
+
+router.post("/upload-avt", upload.single("avt-file"), handleUploadFile);
+
+
+
+	>> đưa ra nơi lữu trữ và validate file 
+
+
+	B4: hàm handle upload file 
+
+const handleUploadFile = async (req, res) => {
+  try {
+    if (req.fileValidationError) {
+      return res.send(req.fileValidationError);
+    } else if (!req.file) {
+      return res.send("Please select an image to upload");
+    }
+
+    // Show uploaded image
+    res.send(
+      `You have uploaded this image: <hr/><img src="/images/${req.file.filename}" width="500"><hr /><a href="/upload">Upload another image</a>`
+    );
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Something went wrong during upload");
+  }
+};
+
+
+
+	2. Upload multiple file
+
+	tương tự, chỉ thay mỗi 
+
+	+ router.post("/upload-multi-avt", upload.array("avt-files", 3), uploadMultipleFiles);
+
+	
+
+Chapter 8: Middleware chuẩn form với Nodejs và expressjs
+
+	( https://expressjs.com/en/guide/using-middleware.html )
+
+	( https://www.npmjs.com/package/morgan ) : middleware logger
+
+
+	sử dụng: app.use() là đang sử dụng middleware
+	
+	KN:
+
+Trong Express.js, middleware là các hàm trung gian được thực thi trong quá trình xử lý request-response. Chúng có thể can thiệp, xử lý hoặc kết thúc request trước khi đến route handler cuối cùng, hoặc chuyển tiếp sang middleware tiếp theo.
+
+
+	VD:
+
+router.post("/abc", (req, res, next) => {...}, handleSmt)
+
+(req, res, next) => { ... }          // Middleware bình thường
+(err, req, res, next) => { ... }     // Middleware xử lý lỗi
+
+
+
+	1. Application-level middleware
+
+	+ được sử dụng bằng cách app.use()
+	
+	VD:
+
+
+const hostname = process.env.HOST_NAME;
+
+// config req.body
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// Routes
+app.use("/", webRouter);
+app.use("/api", apiRouter);
+
+// config viewEngine
+configViewEngine(app);
+
+// 404 middleware
+app.use((req, res) => {
+  return res.render("404.ejs");
+});
+
+
+
+	> 404 middleware này sẽ được thực thi sau khi app quét qua hết các route mà k tìm được route tương ứng 
+
+
+	2. Route-level middleware 
+
+
+VD:
+
+router.use('/user/:id', (req, res, next) => {
+  console.log('Request URL:', req.originalUrl)
+  next()
+}, (req, res) => {
+  console.log('Request Type:', req.method)
+})
+	
+
+	> next(): trong middleware có tác dụng cho biết rằng code đằng sau nó sẽ tiếp tục được thực thi 
+
+	
+		
+
+	
+	
+
+	
+

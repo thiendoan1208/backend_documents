@@ -1,0 +1,196 @@
+1. VPS, Hosting là gì ? 
+
+  +  Hosting (hay Web Hosting) là dịch vụ cho thuê không gian lưu trữ và tài nguyên trên một máy chủ (server) được kết nối Internet 24/7. Mục đích chính của hosting là cho phép các tệp tin của website (HTML, CSS, JavaScript, hình ảnh, video, cơ sở dữ liệu) được truy cập công khai từ bất kỳ đâu trên thế giới thông qua trình duyệt web.
+
+
+  + VPS là một máy chủ riêng ảo được tạo ra bằng công nghệ ảo hóa từ một máy chủ vật lý. Mỗi VPS hoạt động như một máy chủ độc lập hoàn toàn, có hệ điều hành, tài nguyên phần cứng (CPU, RAM, ổ cứng) và địa chỉ IP riêng biệt, được phân bổ và đảm bảo cho người dùng đó.
+
+
+ > Tại sao lại có sự phân biệt giữa vps và hosting, lý do nào hosting lại thường dùng cho FE còn vps lại dùng cho BE 
+
+	
+	+ Frontend (HTML, CSS, JavaScript):
+
+Chủ yếu là các tệp tĩnh.
+
+Thực thi ở phía trình duyệt của người dùng.
+
+Ít nguy cơ trực tiếp bị "hack" theo nghĩa xâm nhập server (trừ các lỗ hổng XSS, CSRF, nhưng 
+đó là vấn đề của code chứ không phải nơi hosting).
+
+Thường được đặt trên các dịch vụ hosting chuyên biệt cho nội dung tĩnh (Vercel, Netlify) để đảm bảo tốc độ tải nhanh và phân phối toàn cầu.
+
+
+	+ Backend (Logic ứng dụng, Database, API):
+
+Chứa logic kinh doanh nhạy cảm.
+
+Kết nối trực tiếp với cơ sở dữ liệu (chứa dữ liệu người dùng, giao dịch, v.v.).
+
+Cung cấp các API mà frontend và các ứng dụng khác tương tác.
+
+Đây là nơi các cuộc tấn công nhắm vào dữ liệu và logic nghiệp vụ thường xảy ra (SQL 
+Injection, tấn công API, truy cập trái phép database).
+
+Cần một môi trường mà bạn có thể:
+
+Cài đặt và cấu hình phần mềm máy chủ, ngôn ngữ lập trình, cơ sở dữ liệu tùy chỉnh.
+
+Thiết lập các biện pháp bảo mật sâu hơn ở cấp độ máy chủ (tường lửa, SSH keys, quản lý 
+quyền truy cập, giám sát log).
+
+Kiểm soát và cô lập tài nguyên để đảm bảo hiệu suất và bảo mật cho database và các dịch vụ nhạy cảm.
+
+
+	Tóm lại: 
+
+Cả Hosting và VPS đều cho phép nhiều người dùng truy cập công khai website của bạn.
+
+Việc deploy backend lên VPS không phải để làm cho nó "private" về mặt truy cập người dùng, mà là để có toàn quyền kiểm soát môi trường máy chủ, từ đó tăng cường khả năng cấu hình bảo mật, quản lý tài nguyên và tùy chỉnh môi trường cho các dịch vụ nhạy cảm và phức tạp của backend. Backend cần được bảo vệ mạnh mẽ vì nó chứa logic và dữ liệu quan trọng, không phải vì nó là "riêng tư" trong khía cạnh truy cập.
+
+
+
+
+2. Sự khác nhau giữa Hosting và VPS là gì ? 
+
+
+Tiêu chí		VPS (Virtual Private Server)	Hosting (Shared Hosting)
+
+Toàn quyền quản lý	✅ Có (như máy ảo riêng)	❌ Không
+
+Cài phần mềm tùy ý	✅ (Node.js, MySQL, Docker…)	❌ Chỉ PHP, MySQL cơ bản
+
+Hiệu năng		Mạnh hơn, không chia sẻ tài nguyên	Yếu hơn, chia sẻ với người 
+								khác
+
+Giá			Cao hơn (thường từ $5/tháng)	Rẻ hơn (có thể $1-2/tháng)
+
+Phù hợp			Backend phức tạp, API, Node.js	Website tĩnh, WordPress, frontend 							HTML	
+
+
+✅ Tóm lại:
+
+Hosting: phù hợp frontend tĩnh như HTML/CSS/React build ra file.
+
+	Không thể chạy backend Node.js ở đây.
+
+VPS: phù hợp với cả frontend + backend vì bạn có toàn quyền cài bất cứ gì (Node, DB...).
+
+	Tuy nhiên cần biết Linux, SSH, bảo mật, Docker…
+
+	Render, Railway, Vercel: là giải pháp cloud hiện đại (miễn phí), dễ hơn VPS nhiều, 	không cần lo bảo trì.
+
+
+🧠 Kết luận:
+
+Bạn cần gì?		Nên dùng
+
+Chạy frontend React	Vercel, Netlify, hoặc Hosting
+
+Chạy backend Node.js/Express	VPS hoặc Render
+
+Chạy cả hai, tiết kiệm, dễ triển khai	Frontend: Vercel, Backend: Render
+
+Dự án lớn cần toàn quyền	Thuê VPS (DigitalOcean, Oracle, AWS...)
+
+
+
+3. Deploy 1 dự án Fullstack diễn ra cơ bản như thế nào 
+
+
+Frontend:
+
+	Deploy lên Vercel → đúng, rất tiện.
+
+	Cấu hình file env để frontend biết URL backend → chính xác, ví dụ 	REACT_APP_API_URL=https://your-backend-url.com.
+
+	Mua domain và trỏ domain về Vercel để chạy frontend → đúng, bạn có thể trỏ domain 	qua DNS về Vercel.
+
+
+Backend:
+
+	Node.js + Express có thể deploy trên Vercel hoặc Render → đúng, nhanh gọn.
+
+	Backend sẽ kết nối đến database trên VPS chạy Docker → chính xác.
+
+	File env backend sẽ chứa connection string đến database trên VPS, ví dụ:
+DB_HOST=IP_VPS
+DB_PORT=3306
+DB_USER=youruser
+DB_PASS=yourpassword
+
+
+Database:
+
+	Docker database chạy trên VPS → đúng, VPS là nơi chứa database (MySQL, 	PostgreSQL...).
+
+	DBeaver bạn chạy trên máy local, kết nối remote đến VPS để quản lý DB → hoàn toàn 	chính xác.
+
+	
+	> vậy docker là nơi chứa toàn bộ các bảng và dữ liệu trong database của tôi còn dbeaver chỉ truy cập và sử dụng nó 
+
+
+	> ta hoàn toàn có thể deploy backend và database lên cùng 1 vps, điều này là khả thi và còn ok hơn cách dùng vercel
+
+	> deploy docker hay bất kì database nào lên vps thì cũng gần gần như nhau
+
+
+4. Domain name and front-end app
+
+>>>>> Hiểu đơn giản là như này: <<<<<
+
+
+B1: bạn bỏ tiền ra mua 1 tên miền (domain).
+
+Tên miền là duy nhất (unique), thành ra, bạn phải nghĩ ra và mua 1 cái tên chưa được sử dụng trước đấy. công dụng của nó là mua 1 cái tên dễ viết, dễ nhớ và không đụng hàng (unique)
+
+ví dụ: bạn nhớ trang google.com chứ không nhớ 192.168.1.69
+thì ở đây: google.com chính là tên miền
+
+
+B2: mua 1 máy tính server(hosting) (chạy trên cloud).
+
+Máy tính trên cloud sẽ có 1 địa chỉ IP, ví dụ 192.168.1.96. Chúng ta cần địa chỉ này để có thể truy cập vào nó.Sau khi truy cập vào server này, các bạn cần tải code (local) lên trên này lưu trữ,và cài đặt các phần mềm cần thiết,ví dụ như database chẳng hạn.
+
+=> đây gọi là bước deploy, giúp chuyển code từ máy tính local lên 1 máy tính ở cloud.
+
+
+B3: Cấu hình tên miền trỏ vào địa chỉ IP server. Tức là: khi người dùng gõ ten-mien-cua-ban.com 
+
+=> máy tính sẽ tự động trỏ tới 192.168.1.96 (địa chỉ server)
+
+Do máy tính server hoạt động 24/7 => bạn có thể truy cập và sử dụng website ở bất cứ đâu, bất cứ khi nào bạn muốn
+
+
+- ưu điểm: website chạy thực tế, 'sống' 24/7, ai cũng có thể truy cập và sử dụng
+- nhược điểm: tốn tiền :v	
+
+
+
+5. DNS là gì ? 
+
+
+DNS (Domain Name System) là hệ thống phân giải tên miền.
+
+Nó giống như "danh bạ điện thoại" của Internet, giúp chuyển từ tên miền dễ nhớ (ví dụ: example.com) sang địa chỉ IP máy chủ thực tế (ví dụ: 123.123.123.123) mà máy tính hiểu được.
+
+
+Cách hoạt động:
+
+Bạn có frontend app deploy trên Vercel, Vercel sẽ cấp cho bạn một URL như:
+myapp.vercel.app
+
+Bạn mua domain mywebsite.com từ nhà cung cấp tên miền.
+
+Cấu hình DNS tại nhà cung cấp domain:
+
+Tạo các bản ghi DNS (record) kiểu A record hoặc CNAME record trỏ domain mywebsite.com về địa chỉ IP hoặc hostname của Vercel (myapp.vercel.app).
+
+Khi người dùng nhập mywebsite.com, trình duyệt sẽ hỏi DNS để biết IP server của Vercel, từ đó tải frontend app của bạn.
+
+
+
+
+
+
+

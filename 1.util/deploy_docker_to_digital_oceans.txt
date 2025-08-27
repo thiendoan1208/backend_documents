@@ -1,0 +1,67 @@
+Hướng dẫn deploy docker lên droplet của digital ocean 
+
+	1. Tạo tài khoản và mở 1 droplet như bình thường 
+
+	2. Chắc chắn phải có container docker rồi 
+
+	3. Ở phần Access của droplet > Droplet Console 
+	
+	4.  Cài Docker (nếu chưa có)
+
+apt update
+apt install -y docker.io
+systemctl start docker
+systemctl enable docker
+
+
+	5. Kiểm tra Docker đã cài thành công chưa
+
+docker --version
+
+
+	6. Trên máy local – Dump dữ liệu từ container MySQL
+
+docker exec letwatch_be_sql-db-mysql-1 mysqldump -u root -pYOURPASSWORD --all-databases > backup.sql
+
+	
+	7. Trên máy local - Copy file backup lên droplet
+
+scp backup.sql root@your_droplet_ip:/root/
+	
+	8. Trên droplet – Pull image MySQL
+
+docker pull mysql:5.7.40
+
+	9.  Chạy container MySQL trên droplet
+
+docker run -d \
+  --name letwatch_be_sql-db-mysql-1 \
+  -e MYSQL_ROOT_PASSWORD=yourpassword \
+  -p 8080:3306 \
+  mysql:5.7.40
+s
+
+	10. Import database vào container trên droplet
+
+docker exec -i letwatch_be_sql-db-mysql-1 mysql -u root -p < /root/backup.sql
+
+hoặc 
+
+docker exec -i letwatch_be_sql-db-mysql-1 mysql -u root -pletwatch1208 < /root/backup.sql
+
+
+	11. . Kiểm tra container
+
+docker ps
+docker ps -a 
+
+
+	* Nếu chưa chạy thì: docker start tên_db
+
+
+
+	12.  Kiểm tra kết nối từ máy local đến droplet
+
+mysql -h your_droplet_ip -P 8080 -u root -p
+
+

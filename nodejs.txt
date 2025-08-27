@@ -1,0 +1,211 @@
+#1. What is Node.JS
+
+	+ Để tạo ra 1 web server chúng ta cần sử dụng các ngôn ngữ backend, có thể kể tới như Java, php, python, js,....
+
+	+ Chúng ta không thể sử dụng các công cụ ở FE để viết server, tuy nhiên JS là một ngoại lệ 
+
+	+ JS có thể chạy được ở FE và BE
+	
+ >> Node.JS là công cụ (môi trường) giúp chúng ta có thể thực thi code JS ngay trên server 
+
+ >> Node.JS là 1 platform(môi trường) chứ không phải là 1 thư viện hay framework 
+
+
+
+Node.js Bài 2 - Cách Truy Xuất Hàm
+
+	+ Khai báo const, func,..
+	
+	+ export module, import qua require
+
+
+
+Node.js Bài 3 - Khái Niệm Nghe Và Gọi (Event Emitter)
+
+
+	+ EventEmitter chỉ đơn giản là nghe và thực hiện 1 yêu cầu nào đó 
+
+VD: 
+
+const EventEmitter = require("events");
+const eventEmitter = new EventEmitter();
+
+eventEmitter.on("tutor", (num1, num2) => {
+  console.log(num1 + num2);
+});
+
+eventEmitter.emit("tutor", 1, 2);
+
+
+> on: tạo ra 1 listener
+> emit: gọi đến listener để nó thực hiện 
+
+
+
+Node.js Bài 4 - Cách Lấy Dữ Liệu Đầu Vào Từ Người Dùng
+
+
+
+const readline = require("readline"); // Phương thức lấy đầu vào từ người dùng
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout,
+}); // Khai báo đầu vào và đầu ra
+
+let answer = "1";
+
+rl.question("what is abc ? \n", (userInput) => {  // ask question
+  if (userInput === answer) {
+    rl.close(); // close chương trình
+  } else {
+    rl.setPrompt("incorrect"); // set cau lenh
+    rl.prompt(); // goi cau lenh
+    rl.on("line", (userInput) => {
+      if (userInput === 1) {
+        rl.close();
+      } else {
+        rl.setPrompt("incorrect"); // set cau lenh
+        rl.prompt(); // goi cau lenh
+      }
+    });
+  }
+});
+
+rl.on("close", () => {
+  console.log("okay");
+});
+
+
+
+Node.js Bài 5 - Khái Niệm CRUD Và Cách Áp Dụng Vào Tập Tin
+
+
+const fs = require("fs");
+
+fs.writeFile("example.txt", "this is an example file", (error) => { // tao file 
+  if (error) {
+    console.log(error);
+  } else {
+    console.log("done")
+    fsl.readFile("example.txt", "utf8", (error, file) => { // doc file 
+      // error: loi
+      // file: noi dung tap tin
+    })
+  }
+});
+
+fs.rename("example.txt", "example_2.txt", (error) => {  // rename file 
+})
+
+fs.appendFile("example.txt", "updated data", (error) => {}) // update file content
+
+fs.unlink("example.txt", (error) => {}) // xoa file
+
+
+
+
+Node.js Bài 6 - Ứng Dụng CRUD Vào Thư Mục
+
+
+const fs = require("fs");
+
+fs.mkdir("tutorial", (error) => { // tao thu muc moi
+  if (error) {
+    console.log(error);
+  } else {
+    fs.writeFile("./tutorial/example.txt", "113", (error) => {}); // tao file trong thu muc
+  }
+});
+
+fs.unlink("./tutorial/example.txt", (error) => { // xoa thu muc trc
+  if (error) {
+  } else {
+    fs.rmdir("tutorial", (error) => {});
+  }
+});
+
+
+fs.readdir("example", (error, file) => {  // doc thu muc 
+
+})
+
+
+
+Node.js Bài 8 - Lợi Ích Khi Dùng Stream Để Làm Việc Với Dữ Liệu Lớn
+
+const fs = require("fs")
+
+const readStream = fs.createReadStream("./abc.txt", "utf8") // doc tap tin du lieu lon chia thanh cac nhom nho va in ra
+const writeStream = fs.createWriteStream("abc.txt") // viet ra 1 tap tin moi vi
+
+readStream.on("data", (chunk) => {
+    writeStream.write(chunk)
+})
+
+readStream.pipe(writeStream)
+
+
+Cơ chế .pipe() sẽ:
+
+Tự động đọc dữ liệu từ readStream từng chunk (mảnh nhỏ) → không cần readStream.on('data', ...).
+
+Ghi trực tiếp dữ liệu đó vào res.
+
+📌 Ưu điểm của .pipe():
+
+Không cần load toàn bộ file vào bộ nhớ → tiết kiệm RAM.
+
+Dữ liệu được streaming từng phần → nhanh hơn và hiệu quả hơn.
+
+Dễ viết và ngắn gọn.
+
+
+
+Node.js Bài 10 - Cách Tạo Server Website Bằng HTTP
+
+const { createServer } = require('node:http');
+
+const hostname = '127.0.0.1';
+const port = 3000;
+
+const server = createServer((req, res) => {
+  res.statusCode = 200;
+  res.setHeader('Content-Type', 'text/plain');
+  res.end('Hello World');
+});
+
+server.listen(port, hostname, () => {
+  console.log(`Server running at http://${hostname}:${port}/`);
+});
+
+
+
+Node.js Bài 11 - Cách Để Website Đọc Tập Tin
+
+
+const { createServer } = require("node:http");
+const fs = require("fs");
+
+const hostname = "127.0.0.1";
+const port = 3000;
+
+const server = createServer((req, res) => {
+  const readStream = fs.createReadStream("./example.json"); // doc tap tin 
+  res.writeHead(200, { "Content-type": "application.json" }); // phan hoi thanh cong
+
+  readStream.pipe(res) // doc va phan hoi
+});
+
+server.listen(port, hostname, () => {
+  console.log(`Server running at http://${hostname}:${port}/`);
+});
+
+
+
+
+
+
+
+
+
+

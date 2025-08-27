@@ -1,0 +1,982 @@
+1. Redis là gì ? 
+
+	+ Redis (Remote Dictionary Server) 
+
+	 > là một in-memory data store cực nhanh
+	 > thường dùng làm cache, message broker, session store, counter/queue, v.v. 
+         > Redis lưu dữ liệu chủ yếu trong RAM nên độ trễ vài micro–millisecond, throughput rất cao.
+	 > Sử dụng cấu trúc key-value 
+	 > Nó có thể ghi ra đĩa để chống mất dữ liệu (persistence) và replication/cluster để chịu tải và HA. (primary db)
+
+	+ Work flow: API > REDIS > DB
+
+
+	+ Cách mà redis lưu dữ liệu 
+
+		Vd: a --> { name: "thgien" }
+		
+		    books --> {"book1", "book2"}
+
+
+
+2. Tạo DB với Redis Cloud
+
+	> Có rất nhiều cách khác nhau để tạo 1 Redis DB
+	
+	1. Sign In 
+	
+	2. Tạo DB
+	
+	3. Kết nối với Redis Insight 
+
+
+	
+3. Làm quen với Redis Insight 
+
+
+	1. Browser (Trình duyệt dữ liệu)
+
+Đây là nơi bạn xem, tìm kiếm, tạo, sửa, xoá key trong Redis.
+
+Trên cùng có:
+
+All Key Types: filter theo loại key (String, Hash, List, Set, ZSet, JSON, Stream,…).
+
+Filter by Key Name or Pattern: tìm key bằng tên (có thể dùng wildcard *).
+
+Ở giữa:
+
+Load sample data: tạo sẵn một số dữ liệu mẫu để bạn test.
+
++ Add key manually: thêm key mới thủ công (chọn loại key, đặt tên, giá trị).
+
+
+	2. Key Details Panel (Chi tiết key)
+
+Khi bạn bấm vào một key ở panel bên trái:
+
+Nó sẽ hiển thị chi tiết giá trị của key ở panel bên phải.
+
+Bạn có thể:
+
+Edit giá trị.
+
+Delete key.
+
+Với Hash, List, Set, ZSet, JSON bạn sẽ có UI riêng để thêm/xoá/truy vấn từng field.
+
+	3. CLI (Command Line)
+
+Ở dưới cùng bạn thấy tab CLI.
+
+Đây là một terminal nhỏ cho phép bạn gõ lệnh Redis trực tiếp, ví dụ:
+
+SET user:1 "Thiện"
+GET user:1
+LPUSH tasks "task1"
+LRANGE tasks 0 -1
+
+
+Nó hữu ích nếu bạn muốn test nhanh lệnh thay vì bấm chuột.
+
+	4. Command Helper
+
+Ngay bên cạnh CLI có tab Command Helper.
+
+Đây là chỗ tra cứu cú pháp các lệnh Redis.
+
+Bạn có thể search lệnh SET, GET, HSET, ZRANGE… và nó sẽ hiện chi tiết usage + ví dụ.
+
+	5. Profiler
+
+Tab Profiler dùng để theo dõi các lệnh đang chạy trong database, giúp debug performance.
+
+
+	6. Workbench
+
+Đây là nơi giống như SQL Editor trong MySQL Workbench vậy.
+
+Bạn có thể viết nhiều lệnh Redis cùng lúc, chia thành các block và chạy từng block để xem kết quả.
+
+Hữu ích khi bạn muốn test logic nhiều bước hoặc copy-paste script Redis.
+
+👉 Ví dụ trong Workbench:
+
+SET user:1 "Thiện"
+SET user:2 "Học Redis"
+
+MGET user:1 user:2
+
+
+Bạn chạy block nào thì RedisInsight sẽ hiện kết quả ngay bên dưới block đó (giúp dễ theo dõi hơn CLI).
+
+	7. Analysis Tool
+
+Đây là công cụ để phân tích dữ liệu và hiệu năng của database.
+
+Nó cho bạn biết:
+
+Số lượng key hiện tại.
+
+Phân loại key theo type (String, List, Hash, JSON…).
+
+Dung lượng sử dụng.
+
+Key nào lớn nhất, key nào tốn RAM nhiều nhất.
+
+Công cụ này hữu ích khi bạn cần debug performance hoặc dọn dẹp Redis.
+
+👉 Ví dụ: nếu bạn thấy 1 key Hash chiếm 80% dung lượng, bạn sẽ biết nên tối ưu chỗ đó.
+	
+	
+	8. Pub/Sub (Publish / Subscribe)
+
+Đây là tính năng truyền thông điệp trong Redis (message broker).
+
+Cơ chế:
+
+Một client Publish (gửi) message vào một channel.
+
+Các client khác đang Subscribe (nghe) channel đó sẽ nhận message ngay lập tức.
+
+👉 Trong RedisInsight, tab Pub/Sub giúp bạn:
+
+Subscribe vào 1 channel (ví dụ chat-room).
+
+Publish message thử (ví dụ "Hello World!").
+
+Xem tin nhắn gửi/nhận trực tiếp ngay trong UI.
+
+⚡ Ứng dụng thực tế: chat app realtime, thông báo, event streaming.
+
+
+
+
+4. Basic Command 
+
+
+	1. STRING 
+
+	( https://redis.io/docs/latest/commands/ )
+
+	*number sẽ tự động bị convert sang string 
+
+
+	1. SET key value  > đặt giá trị 
+
+	2. GET key > lấy giá trị 
+
+	3. DEL key > xóa giá trị 
+
+	4. MGET key key , MSET key value key value  > đặt hoặc lấy nhiều giá trị cùng lúc 
+
+	5. GETRANGE key start end > lấy ra số lượng kí tự nhất định 
+
+	6. SETRANGE key offset value > ghi đè giá trị mới vào 1 vị trí nhất định 
+
+	7. INCRBY, DECRBY key value > incre or dec lên số giá trị nhất định 
+
+
+
+5. Command Options 
+
+	1. STRING   
+
+		> STRING : name --> "Thien"
+
+SET key value [NX | XX] [GET] [EX seconds | PX milliseconds |
+  EXAT unix-time-seconds | PXAT unix-time-milliseconds | KEEPTTL]
+
+
+	. NX  | XX > tùy chọn set nếu có giá trị hoặc không có giá trị 
+
+	. EX | PX | EXAT | PXAT > set expire time sau 1 khoảng thời gian nhất định 
+
+	. GET > lấy ra giá trị trước đó của key 
+
+	. KEEPTTL > giữ lại thời gian sống của key. 
+
+			> VD: 
+
+				SET key 1 EX 10 : hết hạn sau 10s 
+
+				SET key 2 KEEPTTL : vẫn hết hạn sau 10s do lấy expire time của giá trị trước của key 
+
+
+ 
+
+6. SETS
+
+	1. Khái niệm 
+
+	> Cách thức hoạt động gần giống obj mà không có key, tuy nhiên ta k thể add cùng 1 giá trị vô 
+
+	> names: { "THien", "THs", "asd" }
+
+	
+	1. SADD	key member > Thêm nhiều data vào set 
+
+	2. SREM key member > Xóa member 
+		
+	3. SUNION key key > hợp 2 set vào làm 1 
+
+	4. SISMEMBER key value > check xem member có thuộc SET chỉ định không 
+
+
+	
+7. LISTS
+
+
+	1. Khái niệm
+
+List trong Redis là một danh sách có thứ tự (ordered list), giống Array của js, được triển khai dưới dạng doubly linked list.
+
+Một list có thể chứa các chuỗi (string).
+
+Redis list cho phép thêm/xóa phần tử từ cả 2 đầu (trái và phải) với thời gian O(1).
+
+👉 Có thể hình dung Redis List giống như một hàng đợi (queue) hoặc ngăn xếp (stack).
+
+
+	| Lệnh                             | Tác dụng                                                                                  |
+| -------------------------------- | ----------------------------------------------------------------------------------------- |
+| **LPUSH key value \[value ...]** | Thêm 1 hoặc nhiều phần tử vào **đầu (trái)** list                                         |
+| **RPUSH key value \[value ...]** | Thêm 1 hoặc nhiều phần tử vào **cuối (phải)** list                                        |
+| **LPOP key**                     | Lấy và xóa phần tử **đầu (trái)** list                                                    |
+| **RPOP key**                     | Lấy và xóa phần tử **cuối (phải)** list                                                   |
+| **LRANGE key start stop**        | Lấy các phần tử trong list từ `start` đến `stop` (chỉ số từ 0, `-1` là phần tử cuối cùng) |
+| **LLEN key**                     | Trả về độ dài list                                                                        |
+| **LINDEX key index**             | Lấy phần tử ở vị trí `index`                                                              |
+| **LREM key count value**         | Xóa phần tử theo giá trị (count quy định số lượng xóa)                                    |
+| **LTRIM key start stop**         | Giữ lại các phần tử trong phạm vi `[start, stop]`, các phần tử khác bị xóa                |
+| **BLPOP key \[key ...] timeout** | Giống `LPOP` nhưng có thể **block** cho đến khi có phần tử (dùng trong queue)             |
+| **BRPOP key \[key ...] timeout** | Giống `RPOP` nhưng có thể block                                                           |
+
+	
+
+
+8. HASH
+
+
+	1. Khái niệm
+
+Hash trong Redis là một cấu trúc dữ liệu dạng bản đồ (map), chứa các cặp field → value.
+
+Có thể coi Hash trong Redis giống như một object trong JS hoặc dictionary trong Python.
+
+Dùng Hash rất tiện để lưu thông tin chi tiết của một đối tượng (ví dụ: thông tin user, sản phẩm…).
+
+
+
+| Lệnh                                        | Tác dụng                                              |
+| ------------------------------------------- | ----------------------------------------------------- |
+| **HSET key field value \[field value ...]** | Thêm/cập nhật một hoặc nhiều cặp field–value vào hash |
+| **HGET key field**                          | Lấy giá trị của một field                             |
+| **HGETALL key**                             | Lấy toàn bộ field và value trong hash                 |
+| **HDEL key field \[field ...]**             | Xóa 1 hoặc nhiều field khỏi hash                      |
+| **HLEN key**                                | Trả về số lượng field trong hash                      |
+| **HEXISTS key field**                       | Kiểm tra xem field có tồn tại không                   |
+| **HKEYS key**                               | Lấy danh sách các field                               |
+| **HVALS key**                               | Lấy danh sách các value                               |
+| **HMGET key field \[field ...]**            | Lấy nhiều field một lúc                               |
+| **HINCRBY key field increment**             | Tăng giá trị số nguyên của field lên một số nhất định |
+| **HINCRBYFLOAT key field increment**        | Tăng giá trị số thực                                  |
+
+
+	VD: HSET books:1 name "Qua tang quoc song" date 2015 price 10$
+
+	* Lí do cần số :number sau key 
+
+
+Redis không có schema như SQL, chỉ có key–value.
+Để tổ chức dữ liệu cho dễ quản lý, người ta thường theo convention:
+
+Prefix: loại dữ liệu (vd: user, order, post)
+
+ID: định danh duy nhất cho bản ghi đó
+
+Kết hợp lại: user:1001, order:8888, post:2025
+
+👉 Như vậy:
+
+user:1001 đại diện cho thông tin của user có ID = 1001
+
+order:8888 đại diện cho đơn hàng 8888		
+
+
+
+
+9. Redis Client Library 
+
+	1. Khái niệm 
+
+	 + là thư viện giúp ứng dụng (Node.js, Python, Java, C#, …) của bạn kết nối và thao tác với Redis server.
+
+	
+	2. Node-Redis cho Nodejs/JS ( https://github.com/redis/node-redis )
+
+	3. Set up Redis với Express
+	
+	// db.js  > lấy trong phần connect của redis cloud 
+
+// redisClient.js
+const { createClient } = require("redis");
+require("dotenv").config();
+
+const client = createClient({
+  username: process.env.REDIS_USERNAME,
+  password: process.env.REDIS_PASSWORD,
+  socket: {
+    host: process.env.REDIS_HOST,
+    port: process.env.REDIS_PORT,
+  },
+});
+
+client.on("error", (err) => console.error("Redis Client Error", err));
+
+async function connectRedis() {
+  if (!client.isOpen) {
+    await client.connect();
+    console.log("✅ Connected to Redis Cloud");
+  }
+}
+
+module.exports = { client, connectRedis };
+
+
+	// server.js 
+
+const express = require("express");
+const { apiRoutes } = require("./routes/api_routes");
+const { client, connectRedis } = require("./database/redis_db");
+const { config } = require("dotenv");
+config();
+
+const app = express();
+const port = 4000;
+const hostname = "localhost";
+
+// config body-parser
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// Connect Redis
+(async () => {
+  await connectRedis();
+})();
+
+// Routes
+app.use("/api", apiRoutes);
+
+app.listen(port, () => {
+  console.log(`Example app listening on http://${hostname}:${port}`);
+});
+
+
+10. Working with Redis in Express
+
+	1. Câu lệnh set Hash đơn giản 
+
+
+const express = require("express");
+const { client } = require("../database/redis_db");
+
+const apiRoutes = express.Router();
+
+apiRoutes.post("/add-books", async (req, res) => {
+  await client.hSet("nook:1", {
+    title: "Thien"
+  })
+
+  return res.send("Okay")
+})
+
+module.exports = {
+  apiRoutes,
+};
+
+
+ 
+11. Sorted Sets
+
+	1. Khái niệm 
+
+Sorted Set trong Redis là một kiểu dữ liệu đặc biệt, kết hợp giữa Set (tập hợp, không trùng lặp) và List (có sắp xếp theo thứ tự).
+
+👉 Điểm chính:
+
+Giống Set: các phần tử (member) là unique (không trùng lặp).
+
+Khác Set: mỗi phần tử gắn kèm một score (số thực, kiểu double) dùng để xếp hạng.
+
+Redis sẽ tự động sắp xếp các phần tử theo score tăng dần.
+
+
+
+ZADD key score member → thêm/cập nhật member.
+
+ZRANGE key start stop [WITHSCORES] → lấy danh sách từ nhỏ đến lớn.
+
+ZREVRANGE key start stop [WITHSCORES] → lấy từ lớn đến nhỏ.
+
+ZSCORE key member → lấy score của member.
+
+ZRANK key member → lấy vị trí (rank) của member (theo thứ tự tăng).
+
+ZREVRANK key member → rank theo thứ tự giảm.
+
+ZREM key member → xóa member.
+
+
+
+12. Pipelines 
+
+ + Pipeline trong Redis là một cơ chế cho phép bạn gửi nhiều lệnh cùng lúc đến Redis server mà không cần chờ phản hồi từng lệnh trước khi gửi lệnh tiếp theo.
+
+
+	VD:
+
+
+const { createClient } = require("redis");
+
+async function run() {
+  const client = createClient();
+
+  await client.connect();
+
+  const pipeline = client.multi(); // hoặc client.pipeline() trong ioredis
+
+  pipeline.set("user:1", "Alice");
+  pipeline.set("user:2", "Bob");
+  pipeline.set("user:3", "Charlie");
+  pipeline.get("user:1");
+
+// thực thi pipeline
+
+  const results = await pipeline.exec();
+  console.log(results);
+
+  await client.quit();
+}
+
+run();
+
+
+👉 Ở đây: tất cả lệnh SET và GET được gửi cùng lúc, sau đó Redis trả kết quả về theo thứ tự.
+
+
+--------------------------------------------------------
+
+	II. REDIS STACK 
+
+
+1. Redis Stack là gì ?
+
+	+ Redis Stack = Redis cộng thêm các module mở rộng để giải quyết nhiều nhu cầu hơn.
+
+> Redis Stack tích hợp:
+
+	 . RedisJSON → lưu trữ và query dữ liệu JSON (thay vì chỉ string/hash).
+
+	 . RediSearch → full-text search, query phức tạp (WHERE, FILTER, INDEX), hỗ trợ vector search (AI/ML).
+
+	 . RedisGraph → biểu diễn dữ liệu dạng đồ thị (giống Neo4j).
+
+	 . RedisTimeSeries → quản lý dữ liệu chuỗi thời gian (IoT, logs, metrics).
+
+ 	 . RedisBloom → hỗ trợ cấu trúc dữ liệu xác suất (Bloom Filter, Count-Min Sketch, Top-K, v.v.).
+
+
+> Lí do nên dùng Redis Stack 
+
+	. Real time app
+	
+	. sub millisecond process time 
+
+	. Modern data and processsing tool, document, graph, search, time series ]
+	
+	. Serveral redis client lib support redis stack 
+
+	
+	
+
+
+2. Redis Search 
+
+
+	🔎 Redis Search (RediSearch) là gì?
+
+		+ RediSearch là một module của Redis Stack cho phép Redis hỗ trợ full-text search và secondary indexing (tìm kiếm văn bản và tạo index trên dữ liệu).
+	
+
+	⚡ Tác dụng của Redis Search
+
+		1. Full-text search
+
+			+ Có thể index văn bản/text để tìm kiếm theo từ khóa.
+
+Hỗ trợ:
+
+Tìm kiếm từ khóa đơn hoặc cụm từ.
+
+Tìm gần đúng (fuzzy search).
+
+Tìm kiếm với dấu "*" (wildcard).
+
+Ranking theo độ liên quan (giống Google).
+
+	
+	VD: FT.SEARCH movies "action & marvel" > → Trả về các phim vừa là action vừa liên quan đến Marvel.
+
+
+		2. Secondary indexing cho Redis
+
+			+ Redis gốc không có index phụ: bạn chỉ lấy theo key.
+			+ RediSearch cho phép bạn tạo index trên JSON, Hash để filter nhanh.
+	
+		
+	VD: FT.SEARCH idx:users "@age:[18 30] @country:Canada"
+
+	→ Lấy danh sách user tuổi từ 18–30 ở Canada.
+(Nếu chỉ dùng Redis thường thì phải fetch hết rồi lọc bằng code → rất tốn kém).
+
+
+
+		3. Truy vấn nâng cao
+
+Hỗ trợ AND, OR, NOT.
+
+Range queries (số, ngày, time).
+
+Sort theo field (vd: giá từ thấp đến cao).
+
+Geo search (tìm địa điểm gần một tọa độ).
+
+
+
+
+		4. Kết hợp với RedisJSON
+
+RedisJSON lưu dữ liệu dạng JSON, RediSearch có thể index trực tiếp field trong JSON để search.
+👉 Giúp bạn dùng Redis như một document database (giống MongoDB + Elasticsearch gộp chung).
+
+
+
+	🎯 Ứng dụng thực tế của RediSearch
+
+
+🔍 Search bar / Autocomplete trong website (gõ vài chữ gợi ý ngay).
+
+📚 Catalog search: tìm sản phẩm trong e-commerce (lọc theo tên, giá, category).
+
+🎬 Movie search engine: tìm theo title, genre, năm phát hành.
+
+📊 Log / analytics realtime: lọc dữ liệu log, event.
+
+🌍 Location search: tìm cửa hàng gần bạn.
+
+
+		
+ 		> Giải thích qua 1 số câu lệnh 
+
+	1. FT.CREATE 
+
+		📌 FT.CREATE là gì?
+
+FT.CREATE dùng để tạo index trong Redis Search.
+Khi có index rồi, bạn mới có thể dùng FT.SEARCH, FT.AGGREGATE để query dữ liệu nhanh theo nội dung, số, tag, geo, v.v.
+
+Nếu không có index → Redis chỉ biết lấy theo key, không search nâng cao được.
+
+
+		📚 Cú pháp cơ bản
+
+
+FT.CREATE index_name 
+  ON {HASH | JSON} 
+  PREFIX <num> <prefix1> [<prefix2> ...] 
+  SCHEMA field1 type [options] field2 type [options] ...
+
+
+		VD: tạo index cho user 
+
+FT.CREATE idx:users ON JSON PREFIX 1 user: 
+  SCHEMA $.name AS name TEXT 
+         $.age AS age NUMERIC 
+         $.country AS country TAG
+
+
+		Giải thích:
+
+			+ idx: > đặt tên cho index
+			+ ON: > kiểu dữ liệu của user json | hash
+			+ prefix: chỉ index cho những key nào có tiền tố là user: 
+			+ 1:  số lượng tiền tố			
+			
+			+. SCHEMA
+
+Khai báo cấu trúc index (các field nào sẽ được index và kiểu dữ liệu của chúng).
+
+Trong ví dụ:
+
+$.name AS name TEXT
+→ lấy field $.name trong JSON, đặt alias là name, kiểu TEXT (cho phép full-text search).
+
+$.age AS age NUMERIC
+→ field age là kiểu số → có thể dùng để filter theo range (18–30).
+
+$.country AS country TAG
+→ field country là kiểu TAG (phân loại, dùng để filter, nhưng không full-text search).
+
+
+
+
+3. RedisJSON
+	
+	1. RedisJSON là gì
+	
+	+ RedisJSON là một module trong Redis Stack cho phép bạn lưu trữ và thao tác dữ liệu JSON gốc trong Redis.
+	+ Thay vì Redis thường phải serialize object → string (JSON.stringify) rồi SET key value, với RedisJSON bạn có thể lưu, đọc, chỉnh sửa trực tiếp field trong JSON ngay trong Redis.
+	
+
+	🔑 Ý nghĩa của $ trong RedisJSON
+
+		$ = root (gốc) của JSON document.
+
+		Từ $, bạn đi sâu vào các field bằng dấu . hoặc [].
+
+
+	⚡ Tác dụng của RedisJSON
+
+		1. Lưu trữ JSON gốc
+
+		+ Lưu dữ liệu dưới dạng JSON thực sự, không cần convert sang string.
+
+		👉 Ví dụ: JSON.SET user:1 $ '{"name":"Alice","age":25,"country":"Canada"}'
+		
+	
+
+		2. Truy cập trực tiếp field
+
+		+ Không cần fetch nguyên JSON về client để chỉnh sửa. Bạn có thể thao tác trực tiếp trên Redis:
+			
+		VD: 
+			JSON.GET user:1 $.name         # Lấy field name
+			JSON.SET user:1 $.age 26       # Cập nhật tuổi
+			JSON.DEL user:1 $.country      # Xóa field
+
+			
+		3. Hỗ trợ query sâu (path)
+
+		+ Có thể truy cập các field lồng nhau bằng JSONPath ($):
+		
+		VD: 
+	
+			JSON.SET product:1 $ '{"id":101,"info":{"name":"Laptop","price":1200}}'
+			JSON.GET product:1 $.info.price
+
+	
+		4. Kết hợp với RediSearch
+
+		+ RedisJSON + RediSearch = cực mạnh 🚀
+		+ Bạn có thể index field trong JSON để search như database thực thụ.
+			
+
+		5. Hiệu năng cao
+
+		+ RedisJSON lưu trữ và truy cập dữ liệu in-memory, tối ưu hóa cho:
+
+			Realtime app (chat, social, game).
+
+			Microservices (lưu state, config, user session).
+
+			E-commerce (lưu product catalog + search bằng RediSearch).	
+
+
+	🎯 Ứng dụng thực tế của RedisJSON
+
+🛒 Product catalog: lưu sản phẩm (tên, giá, category, tồn kho).
+
+👤 User profile: lưu user (name, email, role, setting).
+
+📊 Session / cache nâng cao: lưu session với nhiều metadata.
+
+🔍 Search + filter (khi kết hợp với RediSearch).
+
+📈 Realtime analytics: cập nhật JSON theo thời gian.	
+			
+
+	
+
+4. RedisGraph 
+
+	
+	📌 RedisGraph là gì?
+
+		+ RedisGraph là module trong Redis Stack cho phép Redis hoạt động như một graph database (cơ sở dữ liệu đồ thị).
+
+	👉 Graph rất phù hợp cho các bài toán như: mạng xã hội, gợi ý bạn bè, quan hệ giữa sản phẩm, knowledge graph, recommendation system.
+
+
+	🕸️ Cách tư duy trong RedisGraph (và graph database nói chung)
+
+		
+		+ Đỉnh (Node / Vertex):
+
+Đại diện cho một thực thể (entity).
+Ví dụ: một người dùng, một bộ phim, một sản phẩm.
+
+		+ Cạnh (Edge):
+
+Đại diện cho mối quan hệ giữa các đỉnh.
+Ví dụ: "Alice FRIEND Bob", "User LIKES Movie".
+
+		+ Thuộc tính (Properties):
+
+Cả Node và Edge đều có thể có thuộc tính.
+
+Ví dụ:
+
+Node Person {name: "Alice", age: 25}
+
+Edge FRIEND {since: 2020}
+	
+
+	
+	** REDIS GRAPH  đã EOL từ đầu năm 2025. ✅✅✅✅✅✅
+
+
+
+5. RedisTimeSeries 
+
+	📌 RedisTimeSeries là gì?
+
+RedisTimeSeries là một module trong Redis Stack được thiết kế để lưu trữ và xử lý chuỗi thời gian (time-series data), tức là dữ liệu có dạng: (timestamp, value)
+
+	
+	🛠️ Các lệnh cơ bản trong RedisTimeSeries
+
+		1. Tạo chuỗi thời gian
+
+		VD: TS.CREATE temperature:room1 RETENTION 60000 LABELS sensor room1 type temperature
+		
+			TS.CREATE key → tạo một chuỗi thời gian mới.
+
+			RETENTION 60000 → dữ liệu cũ hơn 60 giây (60000 ms) sẽ bị xóa.
+
+			LABELS → thêm metadata để sau này filter (vd: sensor=room1).
+
+
+		2. Thêm dữ liệu (insert)
+
+		VD: TS.ADD temperature:room1 * 25.3
+
+			* → Redis tự lấy timestamp hiện tại (epoch time).
+
+			25.3 → giá trị đo được (nhiệt độ).
+			
+
+		3. Lấy dữ liệu
+
+		VD: TS.RANGE temperature:room1 - + 
+
+			- = từ đầu, + = đến hiện tại.
+
+				Ví dụ: lấy dữ liệu trong 1 phút qua:
+
+					TS.RANGE temperature:room1 -60000 +
+
+
+				Lấy dữ liệu của nhiều chuỗi:
+
+					TS.MRANGE - + FILTER type=temperature
+
+
+		4. Thống kê, downsample (aggregation)
+
+			TS.RANGE temperature:room1 - + AGGREGATION avg 10000
+
+
+
+
+	⚡ Tác dụng của RedisTimeSeries
+
+
+		1. Lưu trữ dữ liệu time-series hiệu quả
+
+Tối ưu bộ nhớ cho dữ liệu (timestamp, value).
+
+Có cơ chế retention để tự động xóa dữ liệu cũ.
+
+		2. Xử lý dữ liệu chuỗi thời gian realtime
+
+Query nhanh theo time range.
+
+Tính toán aggregation (avg, min, max, sum, count, stddev, …).
+
+		3. Quản lý metadata bằng labels
+
+Mỗi chuỗi có thể có label → dễ dàng filter khi query nhiều sensor, nhiều metric.
+
+		4. Tích hợp với RedisInsight
+
+RedisInsight có tab TimeSeries, tự động vẽ biểu đồ khi bạn query dữ liệu.
+👉 Rất tiện cho việc monitoring và debug.
+
+
+
+      // Rút ra bài học như sau 
+      /**
+       * time series chỉ đơn giản giúp ta trả về đồ thị của 1 khoảng thời gian nhất định gồm time + value từ đó ta có thể làm việc với nó
+       *  - +  giúp ta trả về toàn bộ time series 
+       *  retetion: sẽ giúp ta loại bỏ dữ liệu đã cũ.
+       *      + giả sử ta đặt là 1 tiếng, sau đó ta thêm dữ liệu vào mỗi 10p thì cứ sau 1 tiếng những dữ liệu đã thêm quá 1 tiếng trước sẽ bị xóa
+       *          VD: 1h> 100$  1h:30 1200$  2h:1: 100$  => dữ liệu từ 1h:100$ sẽ bị xóa
+       *      + expires sẽ ngon hơn nếu ta có 1 chuỗi thời gian cố định không thêm, retention nếu ta cứ thêm dần dần vào chuỗi thời gian
+       *      
+       */
+
+
+
+	🎯 Ứng dụng thực tế
+
+📊 Monitoring system: log CPU, RAM, network usage.
+
+🌡️ IoT sensor data: đo nhiệt độ, độ ẩm, ánh sáng.
+
+💰 Finance: theo dõi giá cổ phiếu/crypto theo thời gian.
+
+🛒 E-commerce: lưu lượng truy cập website theo từng phút.
+
+
+
+
+6. RedisBloom 
+
+	📌 RedisBloom là gì?
+
+	+ RedisBloom là một module trong Redis Stack cung cấp các probabilistic data structures (cấu trúc dữ liệu xác suất).	
+	+ Nói đơn giản: nó giúp bạn lưu trữ và kiểm tra dữ liệu siêu nhanh, siêu tiết kiệm bộ nhớ, nhưng kết quả có thể xác suất sai lệch nhỏ (false positive).
+
+	
+	👉 Các cấu trúc dữ liệu trong RedisBloom:
+
+		+ Bloom Filter
+
+		+ Cuckoo Filter
+
+		+ Count-Min Sketch
+
+		+ Top-K
+
+
+	🛠️ Giải thích từng loại
+
+		1. Bloom Filter
+
+Dùng để kiểm tra một phần tử có thể tồn tại trong tập dữ liệu hay không.
+
+Rất nhẹ, cực nhanh, nhưng có khả năng false positive (trả về "có" dù thật ra không tồn tại).
+
+Ví dụ: kiểm tra xem email có trong danh sách spam không.
+
+	BF.RESERVE bf 0.01 1000
+	BF.ADD bf "alice"
+	BF.EXISTS bf "alice"   # → 1 (có)
+	BF.EXISTS bf "bob"     # → 0 (không)
+
+
+		2. Cuckoo Filter
+
+Giống Bloom Filter nhưng hỗ trợ xóa phần tử.
+
+Thích hợp khi bạn cần thêm và xóa dữ liệu liên tục.
+
+VD: 
+
+CF.RESERVE cf 1000
+CF.ADD cf "alice"
+CF.DEL cf "alice"
+CF.EXISTS cf "alice"  # → 0
+
+	
+		3. Count-Min Sketch
+
+Dùng để đếm tần suất xuất hiện của các phần tử trong luồng dữ liệu.
+
+Ví dụ: đếm số lần mỗi từ xuất hiện trong log truy cập.
+
+VD: 
+
+CMS.INITBYDIM cms 2000 5 > 
+CMS.INCRBY cms "apple" 3 "banana" 2
+CMS.QUERY cms "apple" "banana"   # → [3,2]
+
+
+	Giải thích rõ đoạn này 
+
+	1. Tạo ra 1 ma trận gồm 5 hàng và 2000 cột trong mỗi hàng 
+
+H1: [0,0,0,0,0,0,0,0,0,0]
+H2: [0,0,0,0,0,0,0,0,0,0]
+H3: [0,0,0,0,0,0,0,0,0,0]
+H4: [0,0,0,0,0,0,0,0,0,0]
+H5: [0,0,0,0,0,0,0,0,0,0]
+
+
+	2. incrby sẽ ném ngẫu nhiên apple 3 và banana 2 vào trong cả 5 hàng ở vị trí ngẫu nhiên
+		   _ có thể ném trùng nhau dẫn đến cộng dồn
+
+H1: [0,3,2,0,0,0,0,0,0,0]
+H2: [0,0,0,0,5,0,0,0,0,0]
+H3: [0,0,0,0,0,2,3,0,0,0]
+H4: [5,0,0,0,0,0,0,0,0,0]
+H5: [0,0,0,2,0,0,0,0,3,0]
+
+
+	3. Query
+
+CMS.QUERY cms "apple" → lấy min ở [3,5,3,5,3] = 3 ✅  
+
+CMS.QUERY cms "banana" → lấy min ở [2,5,2,5,2] = 2 ✅
+		
+> >  nó dựa vào số tăng ban đầu để lấy ra chuỗi và lấy min trong đó, số min chính là tần suất xuẩt hiện của nó
+
+
+		4. Top-K
+
+Dùng để giữ danh sách K phần tử phổ biến nhất trong luồng dữ liệu.
+
+Ví dụ: từ khóa được tìm kiếm nhiều nhất.
+
+TOPK.RESERVE tk 5
+TOPK.ADD tk "apple" "banana" "orange"
+TOPK.LIST tk   # → danh sách 5 từ khóa phổ biến nhất
+
+
+		⚡ Tác dụng của RedisBloom
+
+		1. Tiết kiệm bộ nhớ
+
+Không cần lưu toàn bộ dữ liệu mà chỉ cần lưu cấu trúc xác suất.
+
+Rất hữu ích khi xử lý dữ liệu lớn (Big Data, streaming).
+
+		2. Hiệu năng cao
+
+Kiểm tra membership hay đếm tần suất cực nhanh (O(1)).
+
+		3. Ứng dụng thực tế
+
+🔒 Anti-spam / blacklist: kiểm tra nhanh email/username đã tồn tại.
+
+📈 Analytics: đếm tần suất từ khóa, tracking clickstream.
+
+🛒 E-commerce: gợi ý sản phẩm phổ biến nhất (Top-K).
+
+🚀 Big Data systems: giảm tải cho database chính bằng pre-check với Bloom Filter.
+
+
+
+			
+	
